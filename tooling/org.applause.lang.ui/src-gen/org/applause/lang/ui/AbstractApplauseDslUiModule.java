@@ -24,18 +24,8 @@ public abstract class AbstractApplauseDslUiModule extends DefaultUiModule {
 	}
 
 	// contributed by org.eclipse.xtext.generator.parser.antlr.XtextAntlrGeneratorFragment
-	public Class<? extends org.eclipse.jface.text.rules.ITokenScanner> bindITokenScanner() {
-		return org.eclipse.xtext.ui.editor.syntaxcoloring.antlr.AntlrTokenScanner.class;
-	}
-
-	// contributed by org.eclipse.xtext.generator.parser.antlr.XtextAntlrGeneratorFragment
 	public Class<? extends org.eclipse.xtext.ui.editor.contentassist.IProposalConflictHelper> bindIProposalConflictHelper() {
 		return org.eclipse.xtext.ui.editor.contentassist.antlr.AntlrProposalConflictHelper.class;
-	}
-
-	// contributed by org.eclipse.xtext.generator.parser.antlr.XtextAntlrGeneratorFragment
-	public Class<? extends org.eclipse.xtext.ui.editor.IDamagerRepairer> bindIDamagerRepairer() {
-		return org.eclipse.xtext.ui.editor.FastDamagerRepairer.class;
 	}
 
 	// contributed by org.eclipse.xtext.generator.parser.antlr.XtextAntlrGeneratorFragment
@@ -53,6 +43,31 @@ public abstract class AbstractApplauseDslUiModule extends DefaultUiModule {
 		return org.eclipse.xtext.ui.editor.contentassist.FQNPrefixMatcher.class;
 	}
 
+	// contributed by org.eclipse.xtext.generator.exporting.QualifiedNamesFragment
+	public Class<? extends org.eclipse.xtext.ui.refactoring.IDependentElementsCalculator> bindIDependentElementsCalculator() {
+		return org.eclipse.xtext.ui.refactoring.impl.DefaultDependentElementsCalculator.class;
+	}
+
+	// contributed by org.eclipse.xtext.generator.builder.BuilderIntegrationFragment
+	public void configureIResourceDescriptionsBuilderScope(com.google.inject.Binder binder) {
+		binder.bind(org.eclipse.xtext.resource.IResourceDescriptions.class).annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider.NAMED_BUILDER_SCOPE)).to(org.eclipse.xtext.builder.clustering.CurrentDescriptions.ResourceSetAware.class);
+	}
+
+	// contributed by org.eclipse.xtext.generator.builder.BuilderIntegrationFragment
+	public Class<? extends org.eclipse.xtext.ui.editor.IXtextEditorCallback> bindIXtextEditorCallback() {
+		return org.eclipse.xtext.builder.nature.NatureAddingEditorCallback.class;
+	}
+
+	// contributed by org.eclipse.xtext.generator.builder.BuilderIntegrationFragment
+	public void configureIResourceDescriptionsPersisted(com.google.inject.Binder binder) {
+		binder.bind(org.eclipse.xtext.resource.IResourceDescriptions.class).annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.builder.impl.PersistentDataAwareDirtyResource.PERSISTED_DESCRIPTIONS)).to(org.eclipse.xtext.builder.builderState.IBuilderState.class);
+	}
+
+	// contributed by org.eclipse.xtext.generator.builder.BuilderIntegrationFragment
+	public Class<? extends org.eclipse.xtext.ui.editor.DocumentBasedDirtyResource> bindDocumentBasedDirtyResource() {
+		return org.eclipse.xtext.builder.impl.PersistentDataAwareDirtyResource.class;
+	}
+
 	// contributed by org.eclipse.xtext.ui.generator.labeling.LabelProviderFragment
 	public Class<? extends org.eclipse.jface.viewers.ILabelProvider> bindILabelProvider() {
 		return org.applause.lang.ui.labeling.ApplauseDslLabelProvider.class;
@@ -63,14 +78,14 @@ public abstract class AbstractApplauseDslUiModule extends DefaultUiModule {
 		binder.bind(org.eclipse.jface.viewers.ILabelProvider.class).annotatedWith(org.eclipse.xtext.ui.resource.ResourceServiceDescriptionLabelProvider.class).to(org.applause.lang.ui.labeling.ApplauseDslDescriptionLabelProvider.class);
 	}
 
-	// contributed by org.eclipse.xtext.ui.generator.outline.TransformerFragment
-	public Class<? extends org.eclipse.xtext.ui.editor.outline.transformer.ISemanticModelTransformer> bindISemanticModelTransformer() {
-		return org.applause.lang.ui.outline.ApplauseDslTransformer.class;
+	// contributed by org.eclipse.xtext.ui.generator.outline.OutlineTreeProviderFragment
+	public Class<? extends org.eclipse.xtext.ui.editor.outline.IOutlineTreeProvider> bindIOutlineTreeProvider() {
+		return org.applause.lang.ui.outline.ApplauseDslOutlineTreeProvider.class;
 	}
 
-	// contributed by org.eclipse.xtext.ui.generator.outline.OutlineNodeAdapterFactoryFragment
-	public Class<? extends org.eclipse.xtext.ui.editor.outline.actions.IContentOutlineNodeAdapterFactory> bindIContentOutlineNodeAdapterFactory() {
-		return org.applause.lang.ui.outline.ApplauseDslOutlineNodeAdapterFactory.class;
+	// contributed by org.eclipse.xtext.ui.generator.outline.OutlineTreeProviderFragment
+	public Class<? extends org.eclipse.xtext.ui.editor.outline.impl.IOutlineTreeStructureProvider> bindIOutlineTreeStructureProvider() {
+		return org.applause.lang.ui.outline.ApplauseDslOutlineTreeProvider.class;
 	}
 
 	// contributed by org.eclipse.xtext.ui.generator.quickfix.QuickfixProviderFragment
@@ -108,24 +123,64 @@ public abstract class AbstractApplauseDslUiModule extends DefaultUiModule {
 		return org.applause.lang.ui.wizard.ApplauseDslProjectCreator.class;
 	}
 
-	// contributed by org.eclipse.xtext.generator.builder.BuilderIntegrationFragment
-	public void configureIResourceDescriptionsBuilderScope(com.google.inject.Binder binder) {
-		binder.bind(org.eclipse.xtext.resource.IResourceDescriptions.class).annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.scoping.impl.AbstractGlobalScopeProvider.NAMED_BUILDER_SCOPE)).to(org.eclipse.xtext.builder.builderState.ShadowingResourceDescriptions.class);
+	// contributed by org.eclipse.xtext.ui.generator.refactoring.RefactorElementNameFragment
+	public Class<? extends org.eclipse.xtext.ui.refactoring.IRenameStrategy> bindIRenameStrategy() {
+		return org.eclipse.xtext.ui.refactoring.impl.DefaultRenameStrategy.class;
 	}
 
-	// contributed by org.eclipse.xtext.generator.builder.BuilderIntegrationFragment
-	public Class<? extends org.eclipse.xtext.ui.editor.IXtextEditorCallback> bindIXtextEditorCallback() {
-		return org.eclipse.xtext.builder.nature.NatureAddingEditorCallback.class;
+	// contributed by org.eclipse.xtext.ui.generator.refactoring.RefactorElementNameFragment
+	public Class<? extends org.eclipse.xtext.ui.refactoring.IReferenceUpdater> bindIReferenceUpdater() {
+		return org.eclipse.xtext.ui.refactoring.impl.DefaultReferenceUpdater.class;
 	}
 
-	// contributed by org.eclipse.xtext.generator.builder.BuilderIntegrationFragment
-	public void configureIResourceDescriptionsPersisted(com.google.inject.Binder binder) {
-		binder.bind(org.eclipse.xtext.resource.IResourceDescriptions.class).annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.builder.impl.PersistentDataAwareDirtyResource.PERSISTED_DESCRIPTIONS)).to(org.eclipse.xtext.builder.builderState.IBuilderState.class);
+	// contributed by org.eclipse.xtext.ui.generator.refactoring.RefactorElementNameFragment
+	public void configureIPreferenceStoreInitializer(com.google.inject.Binder binder) {
+		binder.bind(org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer.class).annotatedWith(com.google.inject.name.Names.named("RefactoringPreferences")).to(org.eclipse.xtext.ui.refactoring.ui.RefactoringPreferences.Initializer.class);
 	}
 
-	// contributed by org.eclipse.xtext.generator.builder.BuilderIntegrationFragment
-	public Class<? extends org.eclipse.xtext.ui.editor.DocumentBasedDirtyResource> bindDocumentBasedDirtyResource() {
-		return org.eclipse.xtext.builder.impl.PersistentDataAwareDirtyResource.class;
+	// contributed by org.eclipse.xtext.ui.generator.refactoring.RefactorElementNameFragment
+	public Class<? extends org.eclipse.xtext.ui.refactoring.IRenameRefactoringProvider> bindIRenameRefactoringProvider() {
+		return org.eclipse.xtext.ui.refactoring.impl.DefaultRenameRefactoringProvider.class;
+	}
+
+	// contributed by org.eclipse.xtext.ui.generator.refactoring.RefactorElementNameFragment
+	public Class<? extends org.eclipse.xtext.ui.refactoring.ui.IRenameSupport.Factory> bindIRenameSupport$Factory() {
+		return org.eclipse.xtext.ui.refactoring.ui.DefaultRenameSupport.Factory.class;
+	}
+
+	// contributed by org.eclipse.xtext.ui.generator.refactoring.RefactorElementNameFragment
+	public Class<? extends org.eclipse.xtext.ui.refactoring.ui.IRenameElementHandler> bindIRenameElementHandler() {
+		return org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler.class;
+	}
+
+	// contributed by org.eclipse.xtext.ui.generator.templates.CodetemplatesGeneratorFragment
+	public com.google.inject.Provider<org.eclipse.xtext.ui.codetemplates.ui.preferences.TemplatesLanguageConfiguration> provideTemplatesLanguageConfiguration() {
+		return org.eclipse.xtext.ui.codetemplates.ui.AccessibleCodetemplatesActivator.getTemplatesLanguageConfigurationProvider();
+	}
+
+	// contributed by org.eclipse.xtext.ui.generator.templates.CodetemplatesGeneratorFragment
+	public com.google.inject.Provider<org.eclipse.xtext.ui.codetemplates.ui.registry.LanguageRegistry> provideLanguageRegistry() {
+		return org.eclipse.xtext.ui.codetemplates.ui.AccessibleCodetemplatesActivator.getLanguageRegistry();
+	}
+
+	// contributed by org.eclipse.xtext.ui.generator.templates.CodetemplatesGeneratorFragment
+	@org.eclipse.xtext.service.SingletonBinding(eager=true)	public Class<? extends org.eclipse.xtext.ui.codetemplates.ui.registry.LanguageRegistrar> bindLanguageRegistrar() {
+		return org.eclipse.xtext.ui.codetemplates.ui.registry.LanguageRegistrar.class;
+	}
+
+	// contributed by org.eclipse.xtext.ui.generator.templates.CodetemplatesGeneratorFragment
+	public Class<? extends org.eclipse.xtext.ui.editor.templates.XtextTemplatePreferencePage> bindXtextTemplatePreferencePage() {
+		return org.eclipse.xtext.ui.codetemplates.ui.preferences.AdvancedTemplatesPreferencePage.class;
+	}
+
+	// contributed by org.eclipse.xtext.ui.generator.templates.CodetemplatesGeneratorFragment
+	public Class<? extends org.eclipse.xtext.ui.codetemplates.ui.partialEditing.IPartialContentAssistParser> bindIPartialContentAssistParser() {
+		return org.applause.lang.ui.contentassist.antlr.PartialApplauseDslContentAssistParser.class;
+	}
+
+	// contributed by org.eclipse.xtext.ui.generator.compare.CompareFragment
+	public Class<? extends org.eclipse.compare.IViewerCreator> bindIViewerCreator() {
+		return org.eclipse.xtext.ui.compare.DefaultViewerCreator.class;
 	}
 
 

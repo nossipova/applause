@@ -22,6 +22,7 @@ import org.applause.lang.applauseDsl.View;
 import org.applause.lang.applauseDsl.ViewCall;
 import org.applause.lang.scoping.TypeUtil;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.CheckType;
@@ -39,7 +40,7 @@ public class ApplauseDslJavaValidator extends AbstractApplauseDslJavaValidator {
 	@Check
 	void viewNamesShouldStartWithCapital(View view) {
 		if (!Character.isUpperCase(view.getName().charAt(0))) {
-			error("View names should start with an uppercase letter.", ApplauseDslPackage.VIEW__NAME, VIEW_NAME_UPPERCASE);
+			error("View names should start with an uppercase letter.", ApplauseDslPackage.Literals.MODEL_ELEMENT__NAME, VIEW_NAME_UPPERCASE);
 		}
 	}
 	
@@ -54,12 +55,12 @@ public class ApplauseDslJavaValidator extends AbstractApplauseDslJavaValidator {
 			URI uri = res.getURI().appendSegment("..").appendSegment("..").appendSegment("Images").appendSegment(filename);
 			boolean exists = (res.getResourceSet().getURIConverter().exists(uri, null));
 			if(!exists) {
-				error("Icon file '" + filename + "' does not exist.", ApplauseDslPackage.TABBAR_BUTTON__ICON);
+				error("Icon file '" + filename + "' does not exist.", ApplauseDslPackage.Literals.TABBAR_BUTTON__ICON);
 			}
 			else {
 				if (!LEGAL_FILENAMES_PATTERN.matcher(filename).matches()) {
 					error("Icon file '" + filename + "' is not a valid filename. " +
-							"Make sure icon files only contain lowercase letters, numbers and the underscore.", ApplauseDslPackage.TABBAR_BUTTON__ICON);
+							"Make sure icon files only contain lowercase letters, numbers and the underscore.", ApplauseDslPackage.Literals.TABBAR_BUTTON__ICON);
 				}
 			}
 		}
@@ -80,14 +81,14 @@ public class ApplauseDslJavaValidator extends AbstractApplauseDslJavaValidator {
 		};
 		
 		if(Iterables.any(allProviders, otherProviderOfSameType)) {
-			error("Only one resolver per type allowed", ApplauseDslPackage.CONTENT_PROVIDER__TYPE);
+			error("Only one resolver per type allowed", ApplauseDslPackage.Literals.CONTENT_PROVIDER__TYPE);
 		}
 	}
 	
 	@Check(CheckType.FAST)
 	void resolverMustNotReturnLists(ContentProvider provider) {
 		if(provider.isResolver() && provider.isMany()) {
-			error("Resolver must not return lists", ApplauseDslPackage.CONTENT_PROVIDER__MANY);
+			error("Resolver must not return lists", ApplauseDslPackage.Literals.CONTENT_PROVIDER__MANY);
 		}
 	}
 	
@@ -111,9 +112,9 @@ public class ApplauseDslJavaValidator extends AbstractApplauseDslJavaValidator {
 		
 		Set<VariableDeclaration> declarations = ImmutableSet.copyOf(withoutConstants);
 		if(declarations.size()<=0)
-			error("Resolver must use an attribute", ApplauseDslPackage.CONTENT_PROVIDER__URL);
+			error("Resolver must use an attribute", ApplauseDslPackage.Literals.CONTENT_PROVIDER__URL);
 		if(declarations.size()>1)
-			error("Resolver must not use more than one attribute", ApplauseDslPackage.CONTENT_PROVIDER__URL);
+			error("Resolver must not use more than one attribute", ApplauseDslPackage.Literals.CONTENT_PROVIDER__URL);
 	}
 	
 	@Check
@@ -121,7 +122,7 @@ public class ApplauseDslJavaValidator extends AbstractApplauseDslJavaValidator {
 		if(cp.isResolver() && !(
 				cp.getType() == cp.getParameter().getDescription().getType() &&
 				cp.isMany() == cp.getParameter().getDescription().isMany()))
-			error("Resolvers input and output types must match", ApplauseDslPackage.CONTENT_PROVIDER__TYPE);
+			error("Resolvers input and output types must match", ApplauseDslPackage.Literals.CONTENT_PROVIDER__TYPE);
 	}
 	
 	public static ContentProvider findResolver(SimpleProviderConstruction construction) {
@@ -150,19 +151,19 @@ public class ApplauseDslJavaValidator extends AbstractApplauseDslJavaValidator {
 		TypeDescription typeDescription = TypeUtil.getTypeOf(construction.getExpression());
 		if (typeDescription.getType() instanceof Entity) {
 				if(findResolver(construction) == null)
-					warning("No matching resolver found for " + typeDescription.getType().getName(), ApplauseDslPackage.SIMPLE_PROVIDER_CONSTRUCTION__EXPRESSION);
+					warning("No matching resolver found for " + typeDescription.getType().getName(), ApplauseDslPackage.Literals.SIMPLE_PROVIDER_CONSTRUCTION__EXPRESSION);
 		}
 	}
 	
 	@Check
 	void contentProvidersSelectIsLiteral(ContentProvider provider) {
 		if(!(provider.getSelection() instanceof StringLiteral))
-			error("selection must be a string literal", ApplauseDslPackage.CONTENT_PROVIDER__SELECTION);
+			error("selection must be a string literal", ApplauseDslPackage.Literals.CONTENT_PROVIDER__SELECTION);
 	}
 	
 	
 	private void errorIfNotAssignable(TypeDescription actualType,
-			TypeDescription expectedType, int feature) {
+			TypeDescription expectedType, EStructuralFeature feature) {
 		if(!TypeUtil.isAssignable(expectedType, actualType)) {
 			error("Type mismatch: cannot covert from " + TypeUtil.asReadableString(actualType) 
 					+ " to " + TypeUtil.asReadableString(expectedType),
@@ -170,7 +171,7 @@ public class ApplauseDslJavaValidator extends AbstractApplauseDslJavaValidator {
 		}
 	}
 	
-	boolean errorIfCountOfArgumentsDontMatch(boolean expected, boolean actual, int feature) {
+	boolean errorIfCountOfArgumentsDontMatch(boolean expected, boolean actual, EStructuralFeature feature) {
 		if(expected && !actual)
 			error("Expects argument but nothing was passed", feature);
 		if(!expected && actual)
@@ -183,20 +184,20 @@ public class ApplauseDslJavaValidator extends AbstractApplauseDslJavaValidator {
 		Parameter formalParameter = vc.getView().getContent();
 		ProviderConstruction actualParameter = vc.getProvider();
 		
-		if(! errorIfCountOfArgumentsDontMatch(formalParameter!=null, actualParameter!=null, ApplauseDslPackage.VIEW_CALL__PROVIDER) ) {
+		if(! errorIfCountOfArgumentsDontMatch(formalParameter!=null, actualParameter!=null, ApplauseDslPackage.Literals.VIEW_CALL__PROVIDER) ) {
 			TypeDescription expectedType = formalParameter.getDescription();
 			TypeDescription actualType = TypeUtil.getTypeOf(vc.getProvider());
-			errorIfNotAssignable(actualType, expectedType, ApplauseDslPackage.VIEW_CALL__PROVIDER);
+			errorIfNotAssignable(actualType, expectedType, ApplauseDslPackage.Literals.VIEW_CALL__PROVIDER);
 		}
 	}
 
 	@Check
 	void contentProvidersArgumentOfCorrectType(ComplexProviderConstruction pc) {
 		ContentProvider p = pc.getProvider();
-		if(! errorIfCountOfArgumentsDontMatch(p.getParameter() != null, pc.getArgument() != null, ApplauseDslPackage.COMPLEX_PROVIDER_CONSTRUCTION__ARGUMENT)) {
+		if(! errorIfCountOfArgumentsDontMatch(p.getParameter() != null, pc.getArgument() != null, ApplauseDslPackage.Literals.COMPLEX_PROVIDER_CONSTRUCTION__ARGUMENT)) {
 			TypeDescription expectedType = TypeUtil.getTypeOf(p.getParameter());
 			TypeDescription actualType = TypeUtil.getTypeOf(pc.getArgument());
-			errorIfNotAssignable(actualType, expectedType, ApplauseDslPackage.COMPLEX_PROVIDER_CONSTRUCTION__ARGUMENT);
+			errorIfNotAssignable(actualType, expectedType, ApplauseDslPackage.Literals.COMPLEX_PROVIDER_CONSTRUCTION__ARGUMENT);
 		}
 	}
 

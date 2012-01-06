@@ -21,9 +21,9 @@ import com.google.common.collect.Lists;
 /**
  * This class contains custom scoping description.
  * 
- * see : http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping
- * on how and when to use it 
- *
+ * see : http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping on
+ * how and when to use it
+ * 
  */
 public class ApplauseDslScopeProvider extends AbstractDeclarativeScopeProvider {
 	IScope _scope_ObjectReference_object(SectionCell context, EReference ref) {
@@ -32,19 +32,21 @@ public class ApplauseDslScopeProvider extends AbstractDeclarativeScopeProvider {
 		Parameter parameter = tableView.getContent();
 		return scopeFor(Lists.newArrayList(parameter));
 	}
-	
+
 	@Override
 	public IScope getScope(EObject context, EReference reference) {
 		if (ApplauseDslPackage.Literals.VARIABLE_DECLARATION == reference.getEReferenceType()) {
-			return getVariableDeclarationScope(context);
+			return getVariableDeclarationScope(context, reference);
 		}
 		return super.getScope(context, reference);
 	}
-	
-	private IScope getVariableDeclarationScope(EObject context) {
-		if(context.eContainer() instanceof ObjectReference)
-			return new NestedDeclarationScope((ObjectReference) context.eContainer());
-		else
-			return new VariableDeclarationScope(context);
+
+	private IScope getVariableDeclarationScope(EObject context, EReference reference) {
+		IScope outerScope = getDelegate().getScope(context.eContainer(), reference);
+		if (context.eContainer() instanceof ObjectReference) {
+			return new NestedDeclarationScope(outerScope, (ObjectReference) context.eContainer());
+		} else {
+			return new VariableDeclarationScope(outerScope, context);
+		}
 	}
 }

@@ -50,7 +50,7 @@ public class ApplauseDslProjectCreator extends AbstractPluginProjectCreator {
 		output.addOutlet(new Outlet(false, getEncoding(), null, true, project.getLocation().makeAbsolute().toOSString()));
 
 		XpandExecutionContextImpl execCtx = new XpandExecutionContextImpl(output, null);
-		execCtx.getResourceManager().setFileEncoding("ISO-8859-1");
+		execCtx.getResourceManager().setFileEncoding("UTF-8");
 		execCtx.registerMetaModel(new JavaBeansMetaModel());
 
 		XpandFacade facade = XpandFacade.create(execCtx);

@@ -18,3 +18,4 @@ bin
 /reference/WP7/ItemisApp/ItemisApp/obj/
 *.suo
 /templates/itemisApp.iPhone/build/
+/tooling/.metadata

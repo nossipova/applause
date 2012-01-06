@@ -3,7 +3,7 @@ module workflow.ApplauseDslGenerator
 import org.eclipse.emf.mwe.utils.*
 
 var targetDir = "src-gen"
-var fileEncoding = "ISO-8859-1"
+var fileEncoding = "UTF-8"
 var modelPath = "src/model"
 
 Workflow {

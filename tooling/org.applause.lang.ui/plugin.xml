@@ -74,6 +74,19 @@
         </page>
     </extension>
     <extension
+            point="org.eclipse.ui.propertyPages">
+        <page
+            class="org.applause.lang.ui.ApplauseDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
+            id="org.applause.lang.ApplauseDsl"
+            name="ApplauseDsl">
+            <keywordReference id="org.applause.lang.ui.keyword_ApplauseDsl"/>
+            <enabledWhen>
+	            <adapt type="org.eclipse.core.resources.IProject"/>
+			</enabledWhen>
+	        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
+        </page>
+    </extension>
+    <extension
         point="org.eclipse.ui.keywords">
         <keyword
             id="org.applause.lang.ui.keyword_ApplauseDsl"
@@ -187,18 +200,67 @@
    <extension
          point="org.eclipse.ui.newWizards">
       <wizard
-            category="org.applause.lang.ui.wizards"
+            category="org.eclipse.xtext.projectwiz"
             class="org.applause.lang.ui.ApplauseDslExecutableExtensionFactory:org.applause.lang.ui.wizard.CustomApplauseDslNewProjectWizard"
-            icon="icons/applause.png"
             id="org.applause.lang.ui.wizard.ApplauseDslNewProjectWizard"
-            name="APPlause Project"
+            icon="icons/applause.png"
+            name="APPlause"
             project="true">
       </wizard>
-      <category
-            id="org.applause.lang.ui.wizards"
-            name="APPlause">
-      </category>
    </extension>
+   	<!-- Rename Refactoring -->
+	<extension point="org.eclipse.ui.handlers">
+		<handler 
+			class="org.applause.lang.ui.ApplauseDslExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.IRenameElementHandler"
+			commandId="org.eclipse.xtext.ui.refactoring.RenameElement">
+			<activeWhen>
+				<reference
+					definitionId="org.applause.lang.ApplauseDsl.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+	</extension>
+    <extension point="org.eclipse.ui.menus">
+         <menuContribution
+            locationURI="popup:#TextEditorContext?after=group.edit">
+         <command commandId="org.eclipse.xtext.ui.refactoring.RenameElement"
+               style="push">
+            <visibleWhen checkEnabled="false">
+               <reference
+                     definitionId="org.applause.lang.ApplauseDsl.Editor.opened">
+               </reference>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension point="org.eclipse.ui.preferencePages">
+	    <page
+	        category="org.applause.lang.ApplauseDsl"
+	        class="org.applause.lang.ui.ApplauseDslExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.RefactoringPreferencePage"
+	        id="org.applause.lang.ApplauseDsl.refactoring"
+	        name="Refactoring">
+	        <keywordReference id="org.applause.lang.ui.keyword_ApplauseDsl"/>
+	    </page>
+	</extension>
+
+  <extension point="org.eclipse.compare.contentViewers">
+    <viewer id="org.applause.lang.ApplauseDsl.compare.contentViewers"
+            class="org.applause.lang.ui.ApplauseDslExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
+            extensions="applause">
+    </viewer>
+  </extension>
+  <extension point="org.eclipse.compare.contentMergeViewers">
+    <viewer id="org.applause.lang.ApplauseDsl.compare.contentMergeViewers"
+            class="org.applause.lang.ui.ApplauseDslExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
+            extensions="applause" label="ApplauseDsl Compare">
+     </viewer>
+  </extension>
+  <extension point="org.eclipse.ui.editors.documentProviders">
+    <provider id="org.applause.lang.ApplauseDsl.editors.documentProviders"
+            class="org.applause.lang.ui.ApplauseDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
+            extensions="applause">
+    </provider>
+  </extension>
    <extension
          point="org.eclipse.xtext.builder.participant">
       <participant
