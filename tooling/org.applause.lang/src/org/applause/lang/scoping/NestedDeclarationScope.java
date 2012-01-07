@@ -21,6 +21,11 @@ public class NestedDeclarationScope extends AbstractScope {
 	}
 
 	@Override
+	public IScope getParent() {
+		return IScope.NULLSCOPE;
+	}
+
+	@Override
 	protected Iterable<IEObjectDescription> getAllLocalElements() {
 		TypeDescription outerType = TypeUtil.getTypeOf(container.getObject());
 		if (outerType.getType() instanceof Entity) {
