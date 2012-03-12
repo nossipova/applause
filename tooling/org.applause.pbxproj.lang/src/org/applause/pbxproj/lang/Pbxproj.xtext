@@ -1,0 +1,469 @@
+grammar org.applause.pbxproj.lang.Pbxproj hidden(WS, QUOTES)
+
+generate pbxproj "http://www.applause.org/pbxproj/lang/Pbxproj"
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+ProjectModel:
+	'//' '!$*' encoding=Encoding '*$!'
+	'{'
+		'archiveVersion' '=' archiveVersion=INT ';'
+		'classes' '=' '{' classes+=ProjectClass* '}' ';'
+		'objectVersion' '=' objectVersion=INT ';'
+		'objects' '=' '{' objects+=ProjectObject* '}' ';'
+		'rootObject' '=' rootObject=UUID COMMENT_BEGIN commentedName=ExtendedID COMMENT_END ';'
+	'}'
+;
+
+ProjectClass:
+	name=ID	
+;
+
+ProjectObject:
+	PBXBuildFile | PBXFileReference | PBXFrameworksBuildPhase | PBXGroup | PBXNativeTarget | PBXProject |
+	PBXResourcesBuildPhase | PBXShellScriptBuildPhase | PBXSourcesBuildPhase | XCBuildConfiguration | XCConfigurationList //| PBXVariantGroup
+;
+
+PBXBuildFile:
+	{PBXBuildFile}
+	COMMENT_BEGIN BeginLiteral name=PBXBuildFileLiteral SectionLiteral COMMENT_END
+	buildFileReferences+=BuildFileReference*
+	COMMENT_BEGIN EndLiteral PBXBuildFileLiteral SectionLiteral COMMENT_END
+;
+
+BuildFileReference:
+	name=UUID COMMENT_BEGIN commentedFilename=ID 'in' commentedGroupId=ID COMMENT_END '=' buildFile=BuildFile ';'
+;
+
+BuildFile:
+	'{'
+		'isa' '=' isa=PBXBuildFileLiteral ';'
+		'fileRef' '=' fileRef=[FileReference] COMMENT_BEGIN commentedFilename=ID COMMENT_END ';'  
+	'}'
+;
+
+PBXFileReference:
+	{PBXFileReference}
+	COMMENT_BEGIN BeginLiteral name=PBXFileReferenceLiteral SectionLiteral COMMENT_END
+	fileReferences+=FileReference*
+	COMMENT_BEGIN EndLiteral PBXFileReferenceLiteral SectionLiteral COMMENT_END
+;
+
+FileReference:
+	name=UUID COMMENT_BEGIN commentedFilename=ID COMMENT_END '=' file=File ';'
+;
+
+File:
+	'{'
+		'isa' '=' isa=PBXFileReferenceLiteral ';'
+		('fileEncoding' '=' fileEncoding=INT ';')?
+		(('lastKnownFileType' '=' lastKnownFileType=ID) | ('explicitFileType' '=' explicitFileType = ID)) ';'
+		('includeInIndex' '=' includeInIndex=INT ';')?
+		('name' '=' filename=ID ';')?
+		'path' '=' path=Path ';'
+		('plistStructureDefinitionIdentifier' '=' plistStructureDefinitionIdentifier=ID ';')?
+		'sourceTree' '=' sourceTree=SourceTree ';'
+	'}'
+;
+
+PBXFrameworksBuildPhase:
+	{PBXFrameworksBuildPhase}
+	COMMENT_BEGIN BeginLiteral name=PBXFrameworksBuildPhaseLiteral SectionLiteral COMMENT_END
+	buildPhases+=FrameworksBuildPhase*
+	COMMENT_BEGIN EndLiteral PBXFrameworksBuildPhaseLiteral SectionLiteral COMMENT_END
+;
+
+FrameworksBuildPhase:
+	name=UUID COMMENT_BEGIN commentedPhase=ID COMMENT_END '=' '{'
+		'isa' '=' isa=PBXFrameworksBuildPhaseLiteral ';'
+		'buildActionMask' '=' buildActionMask=INT ';'
+		'files' '=' '('
+			frameworks+=Framework*
+		')' ';'
+		'runOnlyForDeploymentPostprocessing' '=' runOnlyForDeploymentPostprocessing=INT ';'
+	'}' ';'
+;
+
+Framework:
+	name=[BuildFileReference] COMMENT_BEGIN commentedFrameworkName=ID 'in' commentedGroupId=ID COMMENT_END ','
+;
+
+PBXGroup:
+	{PBXGroup}
+	COMMENT_BEGIN BeginLiteral name=PBXGroupLiteral SectionLiteral COMMENT_END
+	groups+=Group*	
+	COMMENT_BEGIN EndLiteral PBXGroupLiteral SectionLiteral COMMENT_END
+;
+
+Group:
+	name=UUID COMMENT_BEGIN commentedGroupName=ExtendedID COMMENT_END '=' '{'
+		'isa' '=' isa=PBXGroupLiteral ';'
+		'children' '=' '('
+			files+=GroupedFileReference*
+		')' ';'
+		(('name' '=' groupName=ExtendedID ';') | ('path' '=' path=ID ';'))
+		'sourceTree' '=' sourceTree=SourceTree ';'
+	'}' ';'
+;
+
+GroupedFile:
+	FileReference | Group 
+;
+
+GroupedFileReference:
+	buildFile=[GroupedFile] COMMENT_BEGIN commentedFilename=ExtendedID COMMENT_END ','
+;
+
+PBXNativeTarget:
+	{PBXNativeTarget}
+	COMMENT_BEGIN BeginLiteral name=PBXNativeTargetLiteral SectionLiteral COMMENT_END
+	targets+=NativeTarget*	
+	COMMENT_BEGIN EndLiteral PBXNativeTargetLiteral SectionLiteral COMMENT_END
+	
+;
+
+NativeTarget:
+	name=UUID COMMENT_BEGIN commentedApplicationName+=ExtendedID COMMENT_END '=' '{'
+		'isa' '=' isa=PBXNativeTargetLiteral ';'
+		'buildConfigurationList' '=' buildConfigurationList=UUID
+			COMMENT_BEGIN 'Build' 'configuration' 'list' 'for' commentedTarget=PBXNativeTargetLiteral commentedApplicationName+=ExtendedID COMMENT_END ';'
+		'buildPhases' '=' '('
+			buildPhases+=BuildPhases*
+		')' ';'
+		'buildRules' '=' '(' 
+		')' ';'
+		'dependencies' '=' '('
+		')' ';'
+		'name' '=' targetName=ExtendedID ';'
+		'productName' '=' productName=ExtendedID ';'
+		'productReference' '=' productReference=UUID COMMENT_BEGIN commentedApplicationFileName=ID COMMENT_END ';'
+		'productType' '=' productType=ID ';'
+	'}' ';'
+;
+
+BuildPhases:
+	name=UUID COMMENT_BEGIN commentedFilename=ExtendedID COMMENT_END ','
+;
+
+PBXProject:
+	{PBXProject}
+	COMMENT_BEGIN BeginLiteral name=PBXProjectLiteral SectionLiteral COMMENT_END
+	projects+=Project*	
+	COMMENT_BEGIN EndLiteral PBXProjectLiteral SectionLiteral COMMENT_END
+	
+;
+
+Project:
+	name=UUID COMMENT_BEGIN commentedProjectObject=ExtendedID COMMENT_END '=' '{'
+		'isa' '=' isa=PBXProjectLiteral ';'
+		'attributes' '=' '{'
+			attributes+=Attribute*
+		'}' ';'
+		'buildConfigurationList' '=' buildConfigurationList=UUID COMMENT_BEGIN 'Build' 'configuration' 'list' 'for' PBXProjectLiteral projectNameCommented=ExtendedID COMMENT_END ';'
+		'compatibilityVersion' '=' compatibilityVersion=XcodeVersion ';'
+		'developmentRegion' '=' developmentRegion=DevelopmentRegion ';'
+		'hasScannedForEncodings' '=' hasScannedForEncodings=INT ';'
+		'knownRegions' '=' '('
+			knownRegions+=KnownRegion*
+		')' ';'
+		'mainGroup' '=' mainGroup=ID COMMENT_BEGIN mainGroupName=ExtendedID COMMENT_END ';'
+		'projectDirPath' '=' projectDirPath=Path? ';'
+		'projectRoot' '=' projectRoot=Path? ';'
+		'targets' '=' '('
+			targets+=Target*
+		')' ';'
+	'}' ';'
+;
+
+Attribute:
+	'LastUpgradeCheck' '=' LastUpgradeCheck=INT ';'
+;
+
+KnownRegion:
+	region=DevelopmentRegion ','
+;
+
+Target:
+	name=UUID COMMENT_BEGIN commentedTargetName=ExtendedID COMMENT_END ','
+;
+
+PBXResourcesBuildPhase:
+	{PBXResourcesBuildPhase}
+	COMMENT_BEGIN BeginLiteral name=PBXResourcesBuildPhaseLiteral SectionLiteral COMMENT_END
+	buildPhases+=ResourcesBuildPhase*
+	COMMENT_BEGIN EndLiteral PBXResourcesBuildPhaseLiteral SectionLiteral COMMENT_END
+;
+
+ResourcesBuildPhase:
+	name=UUID COMMENT_BEGIN phase=ID COMMENT_END '=' '{'
+		'isa' '=' isa=PBXResourcesBuildPhaseLiteral ';'
+		'buildActionMask' '=' buildActionMask=INT ';'
+		'files' '=' '('
+			resources+=Resource*
+		')' ';'
+		'runOnlyForDeploymentPostprocessing' '=' runOnlyForDeploymentPostprocessing=INT ';'
+	'}' ';'
+;
+
+Resource:
+	name=UUID COMMENT_BEGIN commentedResourceName=ID 'in' commentedGroupId=ID COMMENT_END ','
+;
+
+PBXShellScriptBuildPhase:
+	{PBXShellScriptBuildPhase}
+	COMMENT_BEGIN BeginLiteral name=PBXShellScriptBuildPhaseLiteral SectionLiteral COMMENT_END
+	buildPhases+=ShellScriptBuildPhase*
+	COMMENT_BEGIN EndLiteral PBXShellScriptBuildPhaseLiteral SectionLiteral COMMENT_END	
+;
+
+ShellScriptBuildPhase:
+	name=UUID COMMENT_BEGIN commentedPhase=ID COMMENT_END '=' '{'
+		'isa' '=' isa=PBXShellScriptBuildPhaseLiteral ';'
+		'buildActionMask' '=' buildActionMask=INT ';'
+		'files' '=' '('
+		')' ';'
+		'inputPaths' '=' '('
+		')' ';'
+		'outputPaths' '=' '('
+		')' ';'
+		'runOnlyForDeploymentPostprocessing' '=' runOnlyForDeploymentPostprocessing=INT ';'
+		'shellPath' '=' shellPath=Path ';'
+		'shellScript' '=' shellScript=ExtendedID ';'
+	'}' ';'
+;
+
+PBXSourcesBuildPhase:
+	{PBXSourcesBuildPhase}
+	COMMENT_BEGIN BeginLiteral name=PBXSourcesBuildPhaseLiteral SectionLiteral COMMENT_END
+	buildPhases+=SourcesBuildPhase*
+	COMMENT_BEGIN EndLiteral PBXSourcesBuildPhaseLiteral SectionLiteral COMMENT_END
+;
+
+SourcesBuildPhase:
+	name=UUID COMMENT_BEGIN commentedPhase=ID COMMENT_END '=' '{'
+		'isa' '=' isa=PBXSourcesBuildPhaseLiteral ';'
+		'buildActionMask' '=' buildActionMask=INT ';'
+		'files' '=' '('
+			resources+=Source*
+		')' ';'
+		'runOnlyForDeploymentPostprocessing' '=' runOnlyForDeploymentPostprocessing=INT ';'
+	'}' ';'
+;
+
+Source:
+	buildFileReference=[BuildFileReference] COMMENT_BEGIN commentedSourceName=ID 'in' commentedGroupId=ID COMMENT_END ','
+;
+
+XCBuildConfiguration:
+	{XCBuildConfiguration}
+	COMMENT_BEGIN BeginLiteral name=XCBuildConfigurationLiteral SectionLiteral COMMENT_END
+	configurations+=BuildConfiguration*
+	COMMENT_BEGIN EndLiteral XCBuildConfigurationLiteral SectionLiteral COMMENT_END
+;
+
+BuildConfiguration:
+	name=UUID COMMENT_BEGIN commentedName=BuildConfigurationType COMMENT_END '=' '{'
+		'isa' '=' isa=XCBuildConfigurationLiteral ';'
+		'buildSettings' '=' '{' buildSettings+=BuildSetting* '}' ';'
+		'name' '=' configurationName=BuildConfigurationType ';'
+	'}' ';'
+;
+
+BuildSetting:
+	name=BuildSettingType '=' (settingValue=Value)? ';'
+;
+
+XCConfigurationList:
+	{XCConfigurationList}
+	COMMENT_BEGIN BeginLiteral name=XCConfigurationListLiteral SectionLiteral COMMENT_END
+	configurationLists+=ConfigurationList*
+	COMMENT_BEGIN EndLiteral XCConfigurationListLiteral SectionLiteral COMMENT_END
+;
+
+ConfigurationList:
+	name=UUID COMMENT_BEGIN 'Build' 'configuration' 'list' 'for' commentedTarget=ProjectObjectLiteral commentedName=ID COMMENT_END '=' '{'
+		'isa' '=' isa=XCConfigurationListLiteral ';'
+		'buildConfigurations' '=' '(' buildConfigurations+=BuildConfigurationReference* ')' ';'
+		'defaultConfigurationIsVisible' '=' defaultConfigurationIsVisible=INT ';'
+		'defaultConfigurationName' '=' defaultConfigurationName = BuildConfigurationType ';'
+	'}' ';'		
+;
+
+BuildConfigurationReference:
+	buildConfiguration=[BuildConfiguration] COMMENT_BEGIN commentedConfigurationName=BuildConfigurationType COMMENT_END ','	
+;
+
+Value:
+	{Value}
+	SimpleValue | ArchitectureTypeValue | Path | PathList | FlagList
+;
+
+ArchitectureTypeValue:
+	'$' '(' value=ArchitectureType ')'
+;
+
+BooleanValue:
+	'YES' | 'NO'
+;
+
+SimpleValue:
+	INT | BooleanValue
+;
+
+UUID:
+	(INT | ID)+
+;
+
+ExtendedID:
+	ID ID*
+;
+
+Path:
+	{Path} '/'? fragments+=PathFragment ('/' fragments+=PathFragment)*
+;
+
+PathFragment:
+	PathVariable | PathID
+;
+
+PathVariable:
+	'$' '('? value=SourceTree ')'?
+;
+
+PathID:
+	value=ExtendedID
+;
+
+PathList:
+	{PathList}
+	'('
+		('\\"'? paths+=Path '\\"'? ',')+
+	')'
+;
+
+FlagList:
+	{FlagList}
+	'('
+		('-' flags+=Flag ',')+
+	')'
+;
+
+ProjectObjectLiteral:
+	PBXBuildFileLiteral | PBXFileReferenceLiteral | PBXFrameworksBuildPhaseLiteral | PBXGroupLiteral | PBXNativeTargetLiteral | PBXProjectLiteral |
+	PBXResourcesBuildPhaseLiteral | PBXShellScriptBuildPhaseLiteral | PBXSourcesBuildPhaseLiteral | XCBuildConfigurationLiteral | XCConfigurationListLiteral
+;
+
+PBXBuildFileLiteral:
+	'PBXBuildFile'	
+;
+
+PBXFileReferenceLiteral:
+	'PBXFileReference'
+;
+
+PBXFrameworksBuildPhaseLiteral:
+	'PBXFrameworksBuildPhase'
+;
+
+PBXGroupLiteral:
+	'PBXGroup'
+;
+
+PBXNativeTargetLiteral:
+	'PBXNativeTarget'
+;
+
+PBXProjectLiteral:
+	'PBXProject'
+;
+
+PBXResourcesBuildPhaseLiteral:
+	'PBXResourcesBuildPhase'
+;
+
+PBXShellScriptBuildPhaseLiteral:
+	'PBXShellScriptBuildPhase'
+;
+
+PBXSourcesBuildPhaseLiteral:
+	'PBXSourcesBuildPhase'
+;
+
+XCBuildConfigurationLiteral:
+	'XCBuildConfiguration'
+;
+
+XCConfigurationListLiteral:
+	'XCConfigurationList'
+;
+
+BeginLiteral:
+	'Begin'
+;
+
+EndLiteral:
+	'End'
+;
+
+SectionLiteral:
+	'section'
+;
+
+
+enum Encoding:
+	UTF8
+;
+
+enum SourceTree:
+	SDKROOT | BUILT_PRODUCTS_DIR | group='<group>' | inherited | SRCROOT
+;
+
+enum XcodeVersion:
+	Xcode32='Xcode 3.2'
+;
+
+enum DevelopmentRegion:
+	English | German | French | Japanese
+;
+
+enum BuildSettingType:
+	ALWAYS_SEARCH_USER_PATHS |
+	COPY_PHASE_STRIP  |
+	GCC_DYNAMIC_NO_PIC |
+	GCC_OPTIMIZATION_LEVEL |
+	GCC_PRECOMPILE_PREFIX_HEADER |
+	GCC_PREFIX_HEADER |
+	INFOPLIST_FILE |
+	LIBRARY_SEARCH_PATHS |
+	PRODUCT_NAME |	
+	ARCHS |
+	CODE_SIGN_IDENTITY |
+	GCC_C_LANGUAGE_STANDARD |
+	GCC_WARN_ABOUT_RETURN_TYPE |
+	GCC_WARN_UNUSED_VARIABLE |
+	HEADER_SEARCH_PATHS |
+	OTHER_LDFLAGS |
+	PROVISIONING_PROFILE |
+	SDKROOT
+;
+
+enum ArchitectureType:
+	ARCHS_STANDARD_32_BIT
+;
+
+enum Flag:
+	ObjC | lxml2
+;
+
+enum BuildConfigurationType:
+	Release | Debug
+;
+
+terminal INT returns ecore::EInt: ('0'..'9')+;
+terminal ID: ('a'..'z'|'A'..'Z'|'0'..'9') ('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'.' | '+' | '-' | '@')*;
+
+terminal WS: (' '|'\t'|'\r'|'\n')+;
+terminal QUOTES: '"';
+
+terminal COMMENT_BEGIN : '/*';
+terminal COMMENT_END : '*/';

@@ -1,0 +1,33 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.applause.pbxproj.lang
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0
+Bundle-SymbolicName: org.applause.pbxproj.lang; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext;bundle-version="2.1.0";visibility:=reexport,
+ org.eclipse.xtext.xbase;bundle-version="2.1.0";resolution:=optional;visibility:=reexport,
+ org.apache.log4j;bundle-version="1.2.15";visibility:=reexport,
+ org.apache.commons.logging;bundle-version="1.0.4";resolution:=optional;visibility:=reexport,
+ org.eclipse.xtext.generator;resolution:=optional,
+ org.eclipse.emf.codegen.ecore;resolution:=optional,
+ org.eclipse.emf.mwe.utils;resolution:=optional,
+ org.eclipse.emf.mwe2.launch;resolution:=optional,
+ org.eclipse.xtext.util,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.common,
+ org.antlr.runtime
+Import-Package: org.apache.log4j,
+ org.apache.commons.logging
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.applause.pbxproj.lang,
+ org.applause.pbxproj.lang.services,
+ org.applause.pbxproj.lang.pbxproj,
+ org.applause.pbxproj.lang.pbxproj.impl,
+ org.applause.pbxproj.lang.pbxproj.util,
+ org.applause.pbxproj.lang.serializer,
+ org.applause.pbxproj.lang.parser.antlr,
+ org.applause.pbxproj.lang.parser.antlr.internal,
+ org.applause.pbxproj.lang.validation,
+ org.applause.pbxproj.lang.scoping,
+ org.applause.pbxproj.lang.formatting
