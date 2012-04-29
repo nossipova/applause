@@ -25,7 +25,6 @@ ProjectObject:
 ;
 
 PBXBuildFile:
-	{PBXBuildFile}
 	COMMENT_BEGIN BeginLiteral name=PBXBuildFileLiteral SectionLiteral COMMENT_END
 	buildFileReferences+=BuildFileReference*
 	COMMENT_BEGIN EndLiteral PBXBuildFileLiteral SectionLiteral COMMENT_END
@@ -38,12 +37,15 @@ BuildFileReference:
 BuildFile:
 	'{'
 		'isa' '=' isa=PBXBuildFileLiteral ';'
-		'fileRef' '=' fileRef=[FileReference] COMMENT_BEGIN commentedFilename=ID COMMENT_END ';'  
+		'fileRef' '=' buildFileFileRef=BuildFileFileRef COMMENT_BEGIN commentedFilename=ID COMMENT_END ';'
 	'}'
 ;
 
+BuildFileFileRef:
+	fileRef=[FileReference]
+;
+
 PBXFileReference:
-	{PBXFileReference}
 	COMMENT_BEGIN BeginLiteral name=PBXFileReferenceLiteral SectionLiteral COMMENT_END
 	fileReferences+=FileReference*
 	COMMENT_BEGIN EndLiteral PBXFileReferenceLiteral SectionLiteral COMMENT_END
@@ -67,7 +69,6 @@ File:
 ;
 
 PBXFrameworksBuildPhase:
-	{PBXFrameworksBuildPhase}
 	COMMENT_BEGIN BeginLiteral name=PBXFrameworksBuildPhaseLiteral SectionLiteral COMMENT_END
 	buildPhases+=FrameworksBuildPhase*
 	COMMENT_BEGIN EndLiteral PBXFrameworksBuildPhaseLiteral SectionLiteral COMMENT_END
@@ -85,11 +86,10 @@ FrameworksBuildPhase:
 ;
 
 Framework:
-	name=[BuildFileReference] COMMENT_BEGIN commentedFrameworkName=ID 'in' commentedGroupId=ID COMMENT_END ','
+	buildFileReference=[BuildFileReference] COMMENT_BEGIN commentedName=ID 'in' commentedGroupId=ID COMMENT_END ','
 ;
 
 PBXGroup:
-	{PBXGroup}
 	COMMENT_BEGIN BeginLiteral name=PBXGroupLiteral SectionLiteral COMMENT_END
 	groups+=Group*	
 	COMMENT_BEGIN EndLiteral PBXGroupLiteral SectionLiteral COMMENT_END
@@ -115,11 +115,9 @@ GroupedFileReference:
 ;
 
 PBXNativeTarget:
-	{PBXNativeTarget}
 	COMMENT_BEGIN BeginLiteral name=PBXNativeTargetLiteral SectionLiteral COMMENT_END
 	targets+=NativeTarget*	
-	COMMENT_BEGIN EndLiteral PBXNativeTargetLiteral SectionLiteral COMMENT_END
-	
+	COMMENT_BEGIN EndLiteral PBXNativeTargetLiteral SectionLiteral COMMENT_END	
 ;
 
 NativeTarget:
@@ -146,11 +144,9 @@ BuildPhases:
 ;
 
 PBXProject:
-	{PBXProject}
 	COMMENT_BEGIN BeginLiteral name=PBXProjectLiteral SectionLiteral COMMENT_END
 	projects+=Project*	
-	COMMENT_BEGIN EndLiteral PBXProjectLiteral SectionLiteral COMMENT_END
-	
+	COMMENT_BEGIN EndLiteral PBXProjectLiteral SectionLiteral COMMENT_END	
 ;
 
 Project:
@@ -188,7 +184,6 @@ Target:
 ;
 
 PBXResourcesBuildPhase:
-	{PBXResourcesBuildPhase}
 	COMMENT_BEGIN BeginLiteral name=PBXResourcesBuildPhaseLiteral SectionLiteral COMMENT_END
 	buildPhases+=ResourcesBuildPhase*
 	COMMENT_BEGIN EndLiteral PBXResourcesBuildPhaseLiteral SectionLiteral COMMENT_END
@@ -210,7 +205,6 @@ Resource:
 ;
 
 PBXShellScriptBuildPhase:
-	{PBXShellScriptBuildPhase}
 	COMMENT_BEGIN BeginLiteral name=PBXShellScriptBuildPhaseLiteral SectionLiteral COMMENT_END
 	buildPhases+=ShellScriptBuildPhase*
 	COMMENT_BEGIN EndLiteral PBXShellScriptBuildPhaseLiteral SectionLiteral COMMENT_END	
@@ -233,7 +227,6 @@ ShellScriptBuildPhase:
 ;
 
 PBXSourcesBuildPhase:
-	{PBXSourcesBuildPhase}
 	COMMENT_BEGIN BeginLiteral name=PBXSourcesBuildPhaseLiteral SectionLiteral COMMENT_END
 	buildPhases+=SourcesBuildPhase*
 	COMMENT_BEGIN EndLiteral PBXSourcesBuildPhaseLiteral SectionLiteral COMMENT_END
@@ -255,7 +248,6 @@ Source:
 ;
 
 XCBuildConfiguration:
-	{XCBuildConfiguration}
 	COMMENT_BEGIN BeginLiteral name=XCBuildConfigurationLiteral SectionLiteral COMMENT_END
 	configurations+=BuildConfiguration*
 	COMMENT_BEGIN EndLiteral XCBuildConfigurationLiteral SectionLiteral COMMENT_END
@@ -274,7 +266,6 @@ BuildSetting:
 ;
 
 XCConfigurationList:
-	{XCConfigurationList}
 	COMMENT_BEGIN BeginLiteral name=XCConfigurationListLiteral SectionLiteral COMMENT_END
 	configurationLists+=ConfigurationList*
 	COMMENT_BEGIN EndLiteral XCConfigurationListLiteral SectionLiteral COMMENT_END
