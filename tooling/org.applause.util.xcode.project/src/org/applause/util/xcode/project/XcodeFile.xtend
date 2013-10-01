@@ -1,10 +1,11 @@
 package org.applause.util.xcode.project
 
+import org.applause.util.xcode.projectfile.pbxproj.BuildFile
+import org.applause.util.xcode.projectfile.pbxproj.FileReference
 import org.applause.util.xcode.projectfile.pbxproj.PbxprojFactory
 
-import static extension org.applause.util.xcode.project.XcodeProjectUtils.*
-import org.applause.util.xcode.projectfile.pbxproj.FileReference
-import org.applause.util.xcode.projectfile.pbxproj.BuildFile
+import static org.applause.util.xcode.project.XcodeProjectUtils.*
+
 import static extension org.applause.util.xcode.project.Path.*
 
 class XcodeFile {
@@ -118,36 +119,36 @@ class XcodeFile {
 		
 		pbx_fileReference.lastKnownFileType = switch type {
 			case FileType::PRECOMPILED_HEADER: 
-				org::applause::util::xcode::projectfile::pbxproj::FileType::SOURCECODE_CH
+				org.applause.util.xcode.projectfile.pbxproj.FileType::SOURCECODE_CH
 			case FileType::C_HEADER:
-				org::applause::util::xcode::projectfile::pbxproj::FileType::SOURCECODE_CH
+				org.applause.util.xcode.projectfile.pbxproj.FileType::SOURCECODE_CH
 			case FileType::C_MODULE:
-				org::applause::util::xcode::projectfile::pbxproj::FileType::SOURCECODE_COBJC
+				org.applause.util.xcode.projectfile.pbxproj.FileType::SOURCECODE_COBJC
 			case FileType::PLIST:
-				org::applause::util::xcode::projectfile::pbxproj::FileType::TEXT_PLIST_XML
+				org.applause.util.xcode.projectfile.pbxproj.FileType::TEXT_PLIST_XML
 			case FileType::FRAMEWORK:
-				org::applause::util::xcode::projectfile::pbxproj::FileType::WRAPPER_FRAMEWORK
+				org.applause.util.xcode.projectfile.pbxproj.FileType::WRAPPER_FRAMEWORK
 			case FileType::XC_DATAMODEL:
-				org::applause::util::xcode::projectfile::pbxproj::FileType::WRAPPER_XC_DATAMODEL
+				org.applause.util.xcode.projectfile.pbxproj.FileType::WRAPPER_XC_DATAMODEL
 		}
 		
 		pbx_fileReference.explicitFileType = switch type {
 			case FileType::APP:
-				org::applause::util::xcode::projectfile::pbxproj::FileType::WRAPPER_APPLICATION
+				org.applause.util.xcode.projectfile.pbxproj.FileType::WRAPPER_APPLICATION
 			case FileType::OCTEST:
-				org::applause::util::xcode::projectfile::pbxproj::FileType::WRAPPER_CF_BUNDLE
+				org.applause.util.xcode.projectfile.pbxproj.FileType::WRAPPER_CF_BUNDLE
 		}
 	}
 	
 	def isBuildFile() {
 		switch pbx_fileReference.lastKnownFileType {
-			case org::applause::util::xcode::projectfile::pbxproj::FileType::SOURCECODE_CH:
+			case org.applause.util.xcode.projectfile.pbxproj.FileType::SOURCECODE_CH:
 				false
-			case org::applause::util::xcode::projectfile::pbxproj::FileType::SOURCECODE_COBJC:
+			case org.applause.util.xcode.projectfile.pbxproj.FileType::SOURCECODE_COBJC:
 				true
-			case org::applause::util::xcode::projectfile::pbxproj::FileType::WRAPPER_FRAMEWORK:
+			case org.applause.util.xcode.projectfile.pbxproj.FileType::WRAPPER_FRAMEWORK:
 				true
-			case org::applause::util::xcode::projectfile::pbxproj::FileType::WRAPPER_XC_DATAMODEL:
+			case org.applause.util.xcode.projectfile.pbxproj.FileType::WRAPPER_XC_DATAMODEL:
 				true
 			default:
 				false
@@ -156,11 +157,11 @@ class XcodeFile {
 	
 	def isSourceBuildFile() {
 		switch pbx_fileReference.lastKnownFileType {
-			case org::applause::util::xcode::projectfile::pbxproj::FileType::SOURCECODE_CH:
+			case org.applause.util.xcode.projectfile.pbxproj.FileType::SOURCECODE_CH:
 				false
-			case org::applause::util::xcode::projectfile::pbxproj::FileType::SOURCECODE_COBJC:
+			case org.applause.util.xcode.projectfile.pbxproj.FileType::SOURCECODE_COBJC:
 				true
-			case org::applause::util::xcode::projectfile::pbxproj::FileType::WRAPPER_XC_DATAMODEL:
+			case org.applause.util.xcode.projectfile.pbxproj.FileType::WRAPPER_XC_DATAMODEL:
 				true
 			default:
 				false
@@ -168,7 +169,7 @@ class XcodeFile {
 	}
 	
 	def isFrameworkFile() {
-		pbx_fileReference.lastKnownFileType == org::applause::util::xcode::projectfile::pbxproj::FileType::WRAPPER_FRAMEWORK
+		pbx_fileReference.lastKnownFileType == org.applause.util.xcode.projectfile.pbxproj.FileType::WRAPPER_FRAMEWORK
 	}
 	
 	SourceTree _sourceTree
@@ -176,11 +177,11 @@ class XcodeFile {
 		_sourceTree = tree
 		pbx_fileReference.sourceTree = switch (tree) {
 			case SourceTree::BUILT_PRODUCTS_DIR:
-				org::applause::util::xcode::projectfile::pbxproj::SourceTree::BUILT_PRODUCTS_DIR
+				org.applause.util.xcode.projectfile.pbxproj.SourceTree::BUILT_PRODUCTS_DIR
 			case SourceTree::SDKROOT:
-				org::applause::util::xcode::projectfile::pbxproj::SourceTree::SDKROOT
+				org.applause.util.xcode.projectfile.pbxproj.SourceTree::SDKROOT
 			case SourceTree::GROUP:
-				org::applause::util::xcode::projectfile::pbxproj::SourceTree::GROUP
+				org.applause.util.xcode.projectfile.pbxproj.SourceTree::GROUP
 		}
 	}
 	

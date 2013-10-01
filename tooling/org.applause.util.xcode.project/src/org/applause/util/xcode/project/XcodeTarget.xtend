@@ -3,10 +3,8 @@ package org.applause.util.xcode.project
 import org.applause.util.xcode.projectfile.pbxproj.NativeTarget
 import org.applause.util.xcode.projectfile.pbxproj.PbxprojFactory
 import org.applause.util.xcode.projectfile.pbxproj.ProductType
-import org.eclipse.xtend.lib.Property
 
 import static org.applause.util.xcode.project.XcodeProjectUtils.*
-import static org.applause.util.xcode.project.XcodeTarget.*
 
 import static extension org.applause.util.xcode.project.XcodeBuildConfigurationList.*
 
@@ -17,7 +15,7 @@ class XcodeTarget {
 
 	XcodeBuildConfigurationList buildConfigurationList
 	
-	def buildConfigurationList() {
+	def XcodeBuildConfigurationList buildConfigurationList() {
 		if (buildConfigurationList == null) {
 			buildConfigurationList = project.createBuildConfigurationList()
 			buildConfigurationList => [

@@ -3,7 +3,8 @@ package org.applause.util.xcode.project;
 public enum IOSVersion {
 	
 	iOS_51 ("5.1"),
-	iOS_60 ("6.0");
+	iOS_60 ("6.0"),
+	iOS_70 ("7.0");
 	
 	private final String version;       
 

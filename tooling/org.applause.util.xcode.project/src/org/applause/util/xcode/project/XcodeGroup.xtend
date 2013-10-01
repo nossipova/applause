@@ -1,14 +1,14 @@
 package org.applause.util.xcode.project
 
-import org.applause.util.xcode.projectfile.pbxproj.PbxprojFactory
-import org.applause.util.xcode.projectfile.pbxproj.Group
-
-import static extension org.applause.util.xcode.project.XcodeProjectUtils.*
-import org.applause.util.xcode.project.XcodeProject
-
-import static extension org.applause.util.xcode.project.XcodeFile.*
-import static extension org.applause.util.xcode.project.Path.*
 import java.util.ArrayList
+import org.applause.util.xcode.projectfile.pbxproj.Group
+import org.applause.util.xcode.projectfile.pbxproj.PbxprojFactory
+import org.applause.util.xcode.projectfile.pbxproj.SourceTree
+
+import static org.applause.util.xcode.project.XcodeFile.*
+import static org.applause.util.xcode.project.XcodeProjectUtils.*
+
+import static extension org.applause.util.xcode.project.Path.*
 
 class XcodeGroup {
 	
@@ -26,7 +26,7 @@ class XcodeGroup {
 		]
 	}
 	
-	def static createProductsGroup(XcodeProject project) {
+	def static XcodeGroup createProductsGroup(XcodeProject project) {
 		project.mainGroup.createGroup() => [
 			productsGroup = true
 		]
@@ -64,7 +64,7 @@ class XcodeGroup {
 		pbx_group = PbxprojFactory::eINSTANCE.createGroup => [
 			name = generateUUID
 			isa = 'PBXGroup'
-			sourceTree = org::applause::util::xcode::projectfile::pbxproj::SourceTree::GROUP
+			sourceTree = SourceTree::GROUP
 		]
 		project.pbx_projectModel.objects.add(pbx_group)
 	}

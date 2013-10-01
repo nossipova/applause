@@ -1,14 +1,12 @@
 package org.applause.util.xcode.project
 
-import org.applause.util.xcode.project.XcodeProject
-
+import java.util.ArrayList
+import java.util.List
+import org.applause.util.xcode.projectfile.pbxproj.ConfigurationList
 import org.applause.util.xcode.projectfile.pbxproj.PbxprojFactory
 
-import static extension org.applause.util.xcode.project.XcodeProjectUtils.*
-import org.applause.util.xcode.projectfile.pbxproj.ConfigurationList
-import static extension org.applause.util.xcode.project.XcodeBuildConfiguration.*
-import java.util.List
-import java.util.ArrayList
+import static org.applause.util.xcode.project.XcodeBuildConfiguration.*
+import static org.applause.util.xcode.project.XcodeProjectUtils.*
 
 class XcodeBuildConfigurationList {
 

@@ -1,26 +1,24 @@
 package org.applause.util.xcode.project
 
+import java.util.ArrayList
 import org.applause.util.xcode.projectfile.pbxproj.Encoding
+import org.applause.util.xcode.projectfile.pbxproj.Group
 import org.applause.util.xcode.projectfile.pbxproj.Language
 import org.applause.util.xcode.projectfile.pbxproj.PbxprojFactory
 import org.applause.util.xcode.projectfile.pbxproj.Project
 import org.applause.util.xcode.projectfile.pbxproj.ProjectModel
+import org.applause.util.xcode.projectfile.pbxproj.ProjectObject
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.xtend.lib.Property
 import org.eclipse.xtext.resource.SaveOptions
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.serializer.ISerializer
 
-import static org.applause.util.xcode.project.XcodeBuildPhase.*
 import static org.applause.util.xcode.project.XcodeGroup.*
 import static org.applause.util.xcode.project.XcodeProjectUtils.*
 import static org.applause.util.xcode.project.XcodeTarget.*
 
 import static extension org.applause.util.xcode.project.XcodeBuildConfigurationList.*
-import java.util.ArrayList
-import org.applause.util.xcode.projectfile.pbxproj.ProjectObject
-import org.applause.util.xcode.projectfile.pbxproj.Group
 
 class XcodeProject extends XcodeProjectBase {
 	@Property ProjectModel pbx_projectModel
@@ -38,7 +36,7 @@ class XcodeProject extends XcodeProjectBase {
 		pbx_project.name = generateUUID
 		pbx_project.isa = 'PBXProject';
 		pbx_project.lastupgradeCheck = 440
-		pbx_project.organisationName = 'Applause'
+		pbx_project.organisationName = '"Applause"'
 		// project.buildConfigurationList
 		pbx_project.compatibilityVersion = 'Xcode 3.2'
 		pbx_project.developmentRegion = Language::ENGLISH

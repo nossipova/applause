@@ -5,7 +5,7 @@ import org.eclipse.xtext.generator.OutputConfiguration
 
 class IosOutputConfigurationProvider extends OutputConfigurationProvider {
 	
-	public static val OUTPUT_MODEL = "MODEL"
+	public static val OUTPUT_MODEL = "MODEL_IOS"
 	public static val OUTPUT_UI = "UI"
 	public static val OUTPUT_APP = "APP"
 	public static val OUTPUT_XCODEPROJ = "XCODEPROJ"

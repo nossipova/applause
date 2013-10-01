@@ -78,9 +78,7 @@ class EntityCompiler  {
 	'''
 	
 	def private extendsClause(Entity entity, ImportManager importManager) {
-		if (entity.superEntity != null) {
-			": " + importManager.serialize(entity.superEntity)
-		}
+		' : ' + if (entity.superEntity != null) { importManager.serialize(entity.superEntity) } else { 'NSObject' }
 	}
 	
 	// -- MODULE
@@ -99,9 +97,9 @@ class EntityCompiler  {
 	
 	def compileImplementation(Entity entity, ImportManager manager) '''
 		@implementation «manager.serialize(entity)»
-			«FOR attribute: entity.attributes»
-				@synthesize «attribute.fieldName»;
-			«ENDFOR»
+«««			«FOR attribute: entity.attributes»
+«««				@synthesize «attribute.fieldName»;
+«««			«ENDFOR»
 		@end
 	'''
 	

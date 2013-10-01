@@ -1,13 +1,11 @@
 package org.applause.util.xcode.project
 
-import org.applause.util.xcode.project.XcodeProject
-
-import org.applause.util.xcode.projectfile.pbxproj.PbxprojFactory
-import org.applause.util.xcode.projectfile.pbxproj.BuildPhase
-
-import static extension org.applause.util.xcode.project.XcodeProjectUtils.*
 import java.util.ArrayList
 import org.applause.util.xcode.projectfile.pbxproj.BuildFile
+import org.applause.util.xcode.projectfile.pbxproj.BuildPhase
+import org.applause.util.xcode.projectfile.pbxproj.PbxprojFactory
+
+import static org.applause.util.xcode.project.XcodeProjectUtils.*
 
 abstract class XcodeBuildPhase {
 	
@@ -22,7 +20,7 @@ abstract class XcodeBuildPhase {
 		pbx_buildPhase.buildActionMask = 2147483647
 		pbx_buildPhase.runOnlyForDeploymentPostprocessing = 0
 
-		project.pbx_projectModel.objects.add(pbx_buildPhase)		
+		project.pbx_projectModel.objects.add(pbx_buildPhase)
 	}
 	
 	def protected Boolean shouldAddFile(XcodeFile file)

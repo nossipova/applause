@@ -129,7 +129,7 @@ public class FixedBuilderParticipant extends BuilderParticipant {
 				if (marker != null) {
 					marker.delete();
 				}
-				if (derivedResourceMarkers.findDerivedResourceMarkers(iFile).length == 0) {
+				if (derivedResourceMarkers.findDerivedResourceMarkers((IResource)iFile).length == 0) {
 					iFile.delete(IResource.KEEP_HISTORY, deleteMonitor.newChild(1));
 					context.needRebuild();
 				}

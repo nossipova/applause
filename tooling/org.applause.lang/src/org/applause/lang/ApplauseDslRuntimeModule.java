@@ -3,6 +3,7 @@
  */
 package org.applause.lang;
 
+import org.applause.lang.scoping.ApplauseDslScopeProvider;
 import org.applause.lang.validation.ApplauseDslXtendValidator;
 
 /**
@@ -15,4 +16,7 @@ public class ApplauseDslRuntimeModule extends org.applause.lang.AbstractApplause
 		return ApplauseDslXtendValidator.class;
 	}
 
+	public Class<? extends org.eclipse.xtext.scoping.IScopeProvider> bindIScopeProvider() {
+		return ApplauseDslScopeProvider.class;
+	}
 }

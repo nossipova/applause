@@ -5,7 +5,7 @@ import org.eclipse.xtext.generator.OutputConfiguration
 
 class AndroidOutputConfigurationProvider extends OutputConfigurationProvider {
 	
-	public static val OUTPUT_MODEL = "MODEL"
+	public static val OUTPUT_MODEL = "MODEL_ANDROID"
 	
 	override getOutputConfigurations() {
 		var result = super.getOutputConfigurations()

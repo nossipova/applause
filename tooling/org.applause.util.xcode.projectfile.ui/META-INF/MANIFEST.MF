@@ -20,8 +20,9 @@ Require-Bundle: org.applause.util.xcode.projectfile;visibility:=reexport,
  com.google.guava,
  org.eclipse.xtext.xbase.lib
 Import-Package: org.apache.log4j
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.applause.util.xcode.projectfile.ui.contentassist,
  org.applause.util.xcode.projectfile.ui.contentassist.antlr,
- org.applause.util.xcode.projectfile.ui.internal
+ org.applause.util.xcode.projectfile.ui.internal,
+ org.applause.util.xcode.projectfile.ui.quickfix
 Bundle-Activator: org.applause.util.xcode.projectfile.ui.internal.PbxprojActivator

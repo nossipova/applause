@@ -1,7 +1,6 @@
 package org.applause.lang.generator.ios.app
 
 import com.google.inject.Inject
-import org.applause.lang.generator.ios.ProjectExtensions
 import org.applause.lang.generator.ios.ProjectFileSystemAccess
 import org.applause.util.xcode.project.CLanguageDialect
 import org.applause.util.xcode.project.CxxLanguageDialect
@@ -12,11 +11,10 @@ import org.eclipse.emf.ecore.resource.Resource
 
 import static extension org.applause.util.xcode.project.Path.*
 import static extension org.applause.util.xcode.project.XcodeBuildConfigurationSettings.*
-import static extension org.applause.util.xcode.project.XcodeProjectObjectExtensions.*
 
 class AppCompiler {
 	
-	@Inject extension ProjectExtensions
+	static final String FRAMEWORK_PATH = 'System/Library/Frameworks/'
 	
 	@Inject AppDelegateCompiler appDelegateCompiler
 	@Inject PrecompiledHeaderCompiler pchCompiler
@@ -35,9 +33,9 @@ class AppCompiler {
 	// Should be similar to the ImportManager. 
 	// For now, let's just add them here. 	
 	def setupFrameworks(Resource resource, ProjectFileSystemAccess pfsa) {
-		pfsa.frameworksGroup => [
-			createFrameworkFile("System/Library/Frameworks/UIKit.framework".toPath)
-		]
+		val frameworksGroup = pfsa.frameworksGroup
+		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile((FRAMEWORK_PATH + 'UIKit.framework').toPath))		
+		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile((FRAMEWORK_PATH + 'Foundation.framework').toPath))
 	}
 	
 	def setupBuildConfigurations(Resource resource, ProjectFileSystemAccess pfsa) {
@@ -53,12 +51,12 @@ class AppCompiler {
 				warnUnusedVariables = true
 				validateProduct = true
 				SDKRoot = SDKRoot::iPhoneOS
-				iOSDeploymentTarget = IOSVersion::iOS_51
+				IOSDeploymentTarget = IOSVersion::iOS_70
 				stripDebugSymbolsDuringCopy = true
 				codeSigningIdentity = '"iPhone Developer"'
 				architectures = '"$(ARCHS_STANDARD_32_BIT)"'
 				gccVersion = GCCVersion::LLVM_41
-				cLanguageDialect = CLanguageDialect::GNU99
+				CLanguageDialect = CLanguageDialect::GNU99
 				cxxLanguageDialect = CxxLanguageDialect::CXX_11
 				blockAssertions = true
 			]
@@ -72,12 +70,12 @@ class AppCompiler {
 				warnUnusedVariables = true
 				validateProduct = true
 				SDKRoot = SDKRoot::iPhoneOS
-				iOSDeploymentTarget = IOSVersion::iOS_51
+				IOSDeploymentTarget = IOSVersion::iOS_70
 				stripDebugSymbolsDuringCopy = true
 				codeSigningIdentity = '"iPhone Developer"'
 				architectures = '"$(ARCHS_STANDARD_32_BIT)"'
 				gccVersion = GCCVersion::LLVM_41
-				cLanguageDialect = CLanguageDialect::GNU99
+				CLanguageDialect = CLanguageDialect::GNU99
 				cxxLanguageDialect = CxxLanguageDialect::CXX_11
 				blockAssertions = true
 			]

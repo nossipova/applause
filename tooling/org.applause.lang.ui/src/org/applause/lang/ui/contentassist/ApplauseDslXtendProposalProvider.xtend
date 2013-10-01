@@ -6,6 +6,7 @@ import org.eclipse.xtext.Assignment
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
+import java.util.List
 
 class ApplauseDslXtendProposalProvider extends ApplauseDslProposalProvider {
 	
@@ -18,7 +19,7 @@ class ApplauseDslXtendProposalProvider extends ApplauseDslProposalProvider {
 		}
 	}
 	
-	def private camelTails(String word) {
+	def private List<String> camelTails(String word) {
 		val tail = word.replaceFirst("([A-Z][a-z]*)", "");
 		if (tail.length > 0) {
 			var list = newArrayList(word.toFirstLower)

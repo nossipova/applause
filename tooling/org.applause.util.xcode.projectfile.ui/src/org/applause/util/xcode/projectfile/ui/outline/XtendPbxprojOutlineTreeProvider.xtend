@@ -62,7 +62,7 @@ class XtendPbxprojOutlineTreeProvider extends DefaultOutlineTreeProvider {
 		}
 	}
 	
-	def createGroupChildren(IOutlineNode parentNode, Group group) { 
+	def void createGroupChildren(IOutlineNode parentNode, Group group) { 
 		val files = group.children.filter(typeof(FileReference))
 		for (file: files) {
 			val fileNode = createEObjectNode(parentNode, file);

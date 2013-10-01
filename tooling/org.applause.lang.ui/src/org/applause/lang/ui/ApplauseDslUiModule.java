@@ -4,12 +4,10 @@
 package org.applause.lang.ui;
 
 import org.applause.lang.ui.builder.ApplauseBuilderParticipant;
-import org.applause.lang.ui.builder.EclipseOutputConfigurationProviderExt;
 import org.applause.lang.ui.builder.FixedEclipseResourceFileSystemAccess2;
 import org.applause.lang.ui.contentassist.ApplauseDslXtendProposalProvider;
 import org.applause.lang.ui.quickfix.ApplauseDslXtendQuickfixProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.xtext.builder.EclipseOutputConfigurationProvider;
 import org.eclipse.xtext.builder.EclipseResourceFileSystemAccess2;
 import org.eclipse.xtext.builder.IXtextBuilderParticipant;
 import org.eclipse.xtext.ui.editor.contentassist.IContentProposalProvider;
@@ -31,10 +29,6 @@ public class ApplauseDslUiModule extends org.applause.lang.ui.AbstractApplauseDs
 	@Override
 	public Class<? extends IXtextBuilderParticipant> bindIXtextBuilderParticipant() {
 		return ApplauseBuilderParticipant.class;
-	}
-	
-	public Class<? extends EclipseOutputConfigurationProvider> bindEclipseOutputConfigurationProvider() {
-		return EclipseOutputConfigurationProviderExt.class;
 	}
 	
 	public Class<?extends EclipseResourceFileSystemAccess2> bindEclipseResourceFileSystemAccess2() {

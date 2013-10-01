@@ -73,11 +73,13 @@ class ListViewCompiler {
 	/** 
 	 * Compiles the module file for a list view.
 	 */
-	def compileModule(ListView listview) '''
+	def compileModule(ListView it) '''
 		«fileHeader»
 		
+		#import "«typeName».h"
+		
 		«val importManager = importManagerFactory.create()»
-		«val body = listview.compileImplementation(importManager)»
+		«val body = compileImplementation(importManager)»
 		«importManager.imports()»
 		«body»
 	'''

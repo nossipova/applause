@@ -82,7 +82,7 @@ class XcodeBuildConfigurationSettings {
 	}
 
 	def static setPrefixHeaderFileName(XcodeBuildConfiguration configuration, String value) {
-		configuration.setSetting("GCC_PRECOMPILE_PREFIX_HEADER", value)
+		configuration.setSetting("GCC_PREFIX_HEADER", value)
 	}
 
 	def static setInfoPListFile(XcodeBuildConfiguration configuration, String value) {

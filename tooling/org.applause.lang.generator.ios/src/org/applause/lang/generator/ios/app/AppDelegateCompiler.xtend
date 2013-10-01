@@ -45,7 +45,6 @@ class AppDelegateCompiler {
 		«fileHeader»
 		
 		«val importManager = importManagerFactory.create()»
-		«importManager.addImport("<UIKit/UIKit.h>")»
 		«val body = app.compileInterface(importManager)»
 		«importManager.imports()»
 		«body»

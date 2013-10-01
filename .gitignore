@@ -20,3 +20,4 @@ bin
 /templates/itemisApp.iPhone/build/
 src-gen
 xtend-gen
+tooling/.metadata
