@@ -10,6 +10,9 @@ import org.applause.lang.generator.ios.IosOutputConfigurationProvider
 import org.applause.lang.generator.ios.ProjectFileSystemAccess
 import org.applause.lang.generator.ios.TypeExtensions
 import org.eclipse.emf.ecore.resource.Resource
+import org.applause.lang.generator.ios.extensions.ImportManagerExtensions
+import org.applause.lang.applauseDsl.DataSource
+import org.applause.lang.applauseDsl.Model
 
 class AppDelegateCompiler {
 	
@@ -20,6 +23,8 @@ class AppDelegateCompiler {
 	@Inject extension TypeExtensions
 	
 	@Inject ImportManagerFactory importManagerFactory
+	
+	@Inject extension ImportManagerExtensions
 	
 	// outlet name
 	public String APP_OUTPUT = IosOutputConfigurationProvider::OUTPUT_APP
@@ -46,23 +51,16 @@ class AppDelegateCompiler {
 		
 		«val importManager = importManagerFactory.create()»
 		«val body = app.compileInterface(importManager)»
-		«importManager.imports()»
+		«importManager.headerImports»
 		«body»
 	'''
 	
-	def compileInterface(Application app, ImportManager manager) '''
+	def compileInterface(Application app, ImportManager manager) '''		
 		@interface AppDelegate : UIResponder <UIApplicationDelegate>
-		@property (strong, nonatomic) UIWindow *window;
-		@end
-	'''
-	
-	def private imports(ImportManager importManager) '''
-		«IF (!importManager.empty)»
-		«FOR imprt: importManager.imports»
-			#import "«imprt».h"
-		«ENDFOR»
-		«ENDIF»
 		
+		@property (strong, nonatomic) UIWindow *window;
+		
+		@end
 	'''
 	
 	// -- MODULE	
@@ -70,47 +68,24 @@ class AppDelegateCompiler {
 	/** 
 	 * Compiles the module file for the app delegate
 	 */
-	def compileModule(Application app) '''
+	def compileModule(Application it) '''
 		«fileHeader»
 		
 		«val importManager = importManagerFactory.create()»
-		«val body = app.compileImplementation(importManager)»
-		«importManager.imports()»
+		«val body = compileImplementation(importManager)»
+		«importManager.headerImports»
 		«body»
 	'''
 	
 	def compileImplementation(Application it, ImportManager manager) '''
-		#import "AppDelegate.h"
-		#import "RestKit.h"
-		#import "GithubObjectMappingProvider.h"
-
+		«manager.addImport('AppDelegate')»
 		@interface AppDelegate ()
+		
 		@property(nonatomic, strong) UINavigationController *navigationController;
+		
 		@end
 
 		@implementation AppDelegate
-
-		- (void)initRestKit
-		{
-			// Init RestKit
-			// ------------------------------
-			RKObjectManager *objectManager = [RKObjectManager objectManagerWithBaseURLString:@"https://api.github.com"];
-			[objectManager.client setValue:[[[UIDevice currentDevice] identifierForVendor] UUIDString] forHTTPHeaderField:@"X-UDID"];
-			objectManager.client.requestQueue.showsNetworkActivityIndicatorWhenBusy = YES;
-
-			objectManager.client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
-			objectManager.serializationMIMEType = RKMIMETypeJSON;
-			objectManager.acceptMIMEType = RKMIMETypeJSON;
-
-			// for some reason, ETags don't seem to work properly. RK doesn't fetch although the backend clearly has been updated.
-			objectManager.client.cachePolicy = RKRequestCachePolicyDefault; // RKRequestCachePolicyLoadIfOffline | RKRequestCachePolicyTimeout; // | RKRequestCachePolicyEtag
-
-			objectManager.mappingProvider = [GithubObjectMappingProvider mappingProvider];
-
-			[[[RKObjectManager sharedManager] client] setPassword:@"h00gend00bel"];
-			[[[RKObjectManager sharedManager] client] setUsername:@"wwaltersen"];
-
-		}
 
 		- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 		{
@@ -125,6 +100,31 @@ class AppDelegateCompiler {
 			return YES;
 		}
 
+		- (void)initRestKit
+		{
+			NSURL *baseURL = [NSURL URLWithString:@"https://api.github.com"];
+			RKObjectManager *objectManager = [RKObjectManager managerWithBaseURL:baseURL];
+			objectManager.requestSerializationMIMEType = RKMIMETypeJSON;
+«««			// TODO
+«««			[objectManager.client setValue:[[[UIDevice currentDevice] identifierForVendor] UUIDString] forHTTPHeaderField:@"X-UDID"];
+«««			objectManager.client.authenticationType = RKRequestAuthenticationTypeHTTPBasic;
+«««			// for some reason, ETags don't seem to work properly. RK doesn't fetch although the backend clearly has been updated.
+«««			objectManager.client.cachePolicy = RKRequestCachePolicyDefault; // RKRequestCachePolicyLoadIfOffline | RKRequestCachePolicyTimeout; // | RKRequestCachePolicyEtag
+			[RKObjectManager setSharedManager:objectManager];
+			
+			[AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+			
+			[[RKObjectManager sharedManager].HTTPClient setAuthorizationHeaderWithUsername:@"wwaltersen" password:@"h00gend00bel"];
+
+		    NSIndexSet *successfulStatusCodes = RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful);
+		    
+		    «val dataSource = (eContainer as Model).elements.filter(DataSource).head»
+		    «manager.addImport(dataSource.typeName)»
+		    «dataSource.name.toFirstUpper»MappingProvider *mappingProvider = [«dataSource.name.toFirstUpper»MappingProvider new];
+		    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:[mappingProvider eventRequestMapping] method:RKRequestMethodGET pathPattern:nil keyPath:nil statusCodes:successfulStatusCodes];
+		    [objectManager addResponseDescriptor:responseDescriptor];
+		}
+
 		@end
 	'''
 	
@@ -137,6 +137,7 @@ class AppDelegateCompiler {
 	}
 	
 	def compileRootViewControllerSetup(Application it, ImportManager manager) '''
+		«manager.addImport(startScreenTypeName)»
 		«manager.serialize(startScreenTypeName)» *«startScreenVariableName» = [[«startScreenTypeName» alloc] init];
 		self.navigationController =  [[UINavigationController alloc] initWithRootViewController:«startScreenVariableName»];
 		self.window.rootViewController = self.navigationController;	

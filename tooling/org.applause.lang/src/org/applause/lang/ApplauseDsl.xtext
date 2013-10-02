@@ -120,7 +120,11 @@ Parameter:
 
 
 RESTURL:
-	{RESTURL} ('/' (QualifiedName | variables+=Variable))*
+	{RESTURL} ('/' parts+=(RESTURLPart|Variable))*
+;
+
+RESTURLPart:
+	{RESTURLPart} text=QualifiedName
 ;
 
 Variable:

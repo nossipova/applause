@@ -2,15 +2,17 @@ package org.applause.lang.base
 
 import com.google.inject.Inject
 import org.applause.lang.applauseDsl.Attribute
+import org.applause.lang.applauseDsl.DataSource
 import org.applause.lang.applauseDsl.DataType
+import org.applause.lang.applauseDsl.ListItemCellDeclaration
+import org.applause.lang.applauseDsl.ListView
 import org.applause.lang.applauseDsl.Model
+import org.applause.lang.applauseDsl.NamedElement
 import org.applause.lang.applauseDsl.NamespaceDeclaration
 import org.applause.lang.applauseDsl.NamespaceMapping
 import org.applause.lang.applauseDsl.NamespacedElement
 import org.applause.lang.applauseDsl.Type
 import org.applause.lang.applauseDsl.TypeMapping
-import org.applause.lang.applauseDsl.ListView
-import org.applause.lang.applauseDsl.NamedElement
 import org.applause.lang.applauseDsl.View
 
 abstract class TypeExtensions {
@@ -46,7 +48,15 @@ abstract class TypeExtensions {
 	}
 	
 	def dispatch String typeName(ListView it) {
-		it.name + 'ViewController'
+		name + 'ViewController'
+	}
+	
+	def dispatch String typeName(DataSource it) {
+		name + 'MappingProvider'
+	}
+	
+	def dispatch String typeName(ListItemCellDeclaration it) {
+		name
 	}
 	
 	def private dispatch name(Model it) {

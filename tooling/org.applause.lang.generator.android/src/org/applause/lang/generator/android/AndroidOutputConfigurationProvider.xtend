@@ -11,7 +11,7 @@ class AndroidOutputConfigurationProvider extends OutputConfigurationProvider {
 		var result = super.getOutputConfigurations()
 		val modelOutput = new OutputConfiguration(OUTPUT_MODEL) 
 		modelOutput.description = "Output folder for model files."
-		modelOutput.outputDirectory = "./src"
+		modelOutput.outputDirectory = "./src-gen"
 		modelOutput.overrideExistingResources = true
 		modelOutput.createOutputDirectory = true
 		modelOutput.cleanUpDerivedResources = true

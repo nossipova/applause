@@ -5,32 +5,28 @@ import org.applause.lang.applauseDsl.Application
 import org.applause.lang.generator.ios.IosOutputConfigurationProvider
 import org.applause.lang.generator.ios.ProjectExtensions
 import org.applause.lang.generator.ios.ProjectFileSystemAccess
+import org.applause.util.xcode.project.XcodeGroup
 import org.eclipse.emf.ecore.resource.Resource
 
 import static extension org.applause.util.xcode.project.XcodeBuildConfigurationSettings.*
 import static extension org.applause.util.xcode.project.XcodeProjectObjectExtensions.*
 
-
 class InfoPlistCompiler {
-	
-	@Inject extension ProjectExtensions	
-	
+
+	@Inject extension ProjectExtensions
+
 	// outlet name
 	public String APP_OUTPUT = IosOutputConfigurationProvider::OUTPUT_APP
-	
+
 	/**
 	 * Main entry point for the Info.plist compiler.
 	 */
-	def compile(Resource resource, ProjectFileSystemAccess pfsa) {
-		val appGroup = pfsa.mainSourceGroup
-		
-		resource.allContents.filter(typeof(Application)).forEach[
+	def compile(Resource resource, ProjectFileSystemAccess pfsa, XcodeGroup group) {
+		resource.allContents.filter(typeof(Application)).forEach [
 			val fileName = resource.appName + "-Info.plist"
-			val infoPlistFile = pfsa.createPlistFile(appGroup, APP_OUTPUT, fileName, it.compileInfoPlist)
+			val infoPlistFile = pfsa.createPlistFile(group, APP_OUTPUT, fileName, it.compileInfoPlist)
 			pfsa.appTarget => [
-				getBuildConfiguration("Release") => [
-					
-				]
+				getBuildConfiguration("Release") => []
 				getBuildConfiguration("Debug") => [
 					val infoPlistFilePath = infoPlistFile.projectRelativePath
 					infoPListFile = '"' + infoPlistFilePath + '"'
@@ -38,14 +34,14 @@ class InfoPlistCompiler {
 			]
 		]
 	}
-	
+
 	/**
 	 * Compiles the header file for precompiled header files for the project.
 	 */
 	def compileInfoPlist(Application app) '''
 		«app.compileInterface()»
 	'''
-	
+
 	def compileInterface(Application app) '''
 		<?xml version="1.0" encoding="UTF-8"?>
 		<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -86,5 +82,5 @@ class InfoPlistCompiler {
 		</dict>
 		</plist>
 	'''
-	
+
 }

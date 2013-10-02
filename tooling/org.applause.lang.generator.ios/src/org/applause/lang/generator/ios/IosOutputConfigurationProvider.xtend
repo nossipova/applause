@@ -7,6 +7,7 @@ class IosOutputConfigurationProvider extends OutputConfigurationProvider {
 	
 	public static val OUTPUT_MODEL = "MODEL_IOS"
 	public static val OUTPUT_UI = "UI"
+	public static val OUTPUT_DATASOURCE = "DATASOURCE"
 	public static val OUTPUT_APP = "APP"
 	public static val OUTPUT_XCODEPROJ = "XCODEPROJ"
 	
@@ -30,6 +31,15 @@ class IosOutputConfigurationProvider extends OutputConfigurationProvider {
 		uiOutput.cleanUpDerivedResources = true
 		uiOutput.setDerivedProperty = true
 		result.add(uiOutput)
+		
+		val datasourceOutput = new OutputConfiguration(OUTPUT_DATASOURCE) 
+		datasourceOutput.description = "Output folder for Datasource files."
+		datasourceOutput.outputDirectory = "./"
+		datasourceOutput.overrideExistingResources = true
+		datasourceOutput.createOutputDirectory = false
+		datasourceOutput.cleanUpDerivedResources = true
+		datasourceOutput.setDerivedProperty = true
+		result.add(datasourceOutput)
 		
 		val appOutput = new OutputConfiguration(OUTPUT_APP) 
 		appOutput.description = "Output folder for general app files."

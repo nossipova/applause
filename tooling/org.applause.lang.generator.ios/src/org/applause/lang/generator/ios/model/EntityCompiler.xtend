@@ -10,38 +10,34 @@ import org.applause.lang.generator.ios.BoilerplateExtensions
 import org.applause.lang.generator.ios.IosOutputConfigurationProvider
 import org.applause.lang.generator.ios.ProjectFileSystemAccess
 import org.applause.lang.generator.ios.TypeExtensions
-import org.eclipse.emf.ecore.resource.Resource
-
-import static extension org.applause.util.xcode.project.Path.*
+import org.applause.lang.generator.ios.extensions.ImportManagerExtensions
+import org.applause.util.xcode.project.XcodeGroup
 
 /**
  * Compiles entity headers and modules.
  */
-class EntityCompiler  {
-	
+class EntityCompiler {
+
 	@Inject extension BoilerplateExtensions
 	@Inject extension TypeExtensions
 	@Inject extension AttributeExtensions
-	
+
 	@Inject ImportManagerFactory importManagerFactory
-	
+
+	@Inject extension ImportManagerExtensions
+
 	// outlet name
 	public String MODEL_OUPUT = IosOutputConfigurationProvider::OUTPUT_MODEL
-	
+
 	/**
 	 * Main entry point for the entity compiler.
 	 */
-	def compile(Resource resource, ProjectFileSystemAccess pfsa) {
-		val modelGroup = pfsa.mainSourceGroup.createGroup("Model".toPath)
-		
-		resource.allContents.filter(typeof(Entity)).forEach[
-			pfsa.createHeaderFile(modelGroup, MODEL_OUPUT, it.headerFileName, it.compileHeader)
-			pfsa.createModuleFile(modelGroup, MODEL_OUPUT, it.moduleFileName, it.compileModule)
-		]
+	def compile(Entity it, ProjectFileSystemAccess pfsa, XcodeGroup group) {
+		pfsa.createHeaderFile(group, MODEL_OUPUT, headerFileName, compileHeader)
+		pfsa.createModuleFile(group, MODEL_OUPUT, moduleFileName, compileModule)
 	}
-	
+
 	// -- HEADER
-	
 	/**
 	 * Compiles the header file for an entity.
 	 */
@@ -50,39 +46,35 @@ class EntityCompiler  {
 		
 		«val importManager = importManagerFactory.create(entity)»
 		«val body = entity.compileInterface(importManager)»
-		«importManager.imports()»
+		«importManager.headerImports»
 		«body»
 	'''
-	
+
 	def compileInterface(Entity entity, ImportManager manager) '''
 		@interface «entity.typeName»«entity.extendsClause(manager)»
 		
-		«FOR attribute: entity.attributes»
+		«FOR attribute : entity.attributes»
 			«attribute.compile(manager)»
 		«ENDFOR»
 				
 		@end
 	'''
-	
+
 	def compile(Attribute attribute, ImportManager manager) '''
-		@property (strong, nonatomic) «manager.serialize(attribute.type, attribute.many)» «IF !attribute.type.primitive»*«ENDIF»«attribute.fieldName»;
+		@property (strong, nonatomic) «manager.serialize(attribute.type, attribute.many)» «IF !attribute.type.primitive»*«ENDIF»«attribute.
+			fieldName»;
 	'''
 
-	def private imports(ImportManager importManager) '''
-		«IF (!importManager.empty)»
-		«FOR imprt: importManager.imports»
-			#import "«imprt».h"
-		«ENDFOR»
-		«ENDIF»
-		
-	'''
-	
 	def private extendsClause(Entity entity, ImportManager importManager) {
-		' : ' + if (entity.superEntity != null) { importManager.serialize(entity.superEntity) } else { 'NSObject' }
+		' : ' +
+			if(entity.superEntity != null) {
+				importManager.serialize(entity.superEntity)
+			} else {
+				'NSObject'
+			}
 	}
-	
+
 	// -- MODULE
-	
 	/** 
 	 * Compiles the module file for an entity.
 	 */
@@ -91,17 +83,14 @@ class EntityCompiler  {
 		
 		«val importManager = importManagerFactory.create(entity)»
 		«val body = entity.compileImplementation(importManager)»
-		«importManager.imports()»
+		«importManager.headerImports»
 		«body»
 	'''
-	
+
 	def compileImplementation(Entity entity, ImportManager manager) '''
 		@implementation «manager.serialize(entity)»
-«««			«FOR attribute: entity.attributes»
-«««				@synthesize «attribute.fieldName»;
-«««			«ENDFOR»
+		
 		@end
 	'''
-	
-	
+
 }

@@ -96,5 +96,13 @@ class XcodeBuildConfigurationSettings {
 	def static setWrapperExtension(XcodeBuildConfiguration configuration, String value) {
 		configuration.setSetting("WRAPPER_EXTENSION", value)
 	}
+	
+	def static setOtherLinkerFlags(XcodeBuildConfiguration configuration, String value) {
+		configuration.setSetting("OTHER_LDFLAGS", value)
+	}
+
+	def static setHeaderSearchPaths(XcodeBuildConfiguration configuration, String value) {
+		configuration.setSetting("HEADER_SEARCH_PATHS", value)
+	}
 
 }

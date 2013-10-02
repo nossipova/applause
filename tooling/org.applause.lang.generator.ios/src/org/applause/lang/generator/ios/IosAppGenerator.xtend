@@ -7,12 +7,14 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess
 import org.eclipse.xtext.generator.IGenerator
 import org.applause.lang.generator.ios.app.AppCompiler
+import org.applause.lang.generator.ios.datasource.DatasourceCompiler
 
 class IosAppGenerator implements IGenerator {
 
 	@Inject ModelCompiler modelCompiler
 	@Inject UICompiler uiCompiler
 	@Inject AppCompiler appCompiler
+	@Inject DatasourceCompiler datasourceCompiler
 	
 	@Inject ProjectFileSystemAccessFactory projectFileSystemAccessFactory
 	
@@ -22,6 +24,7 @@ class IosAppGenerator implements IGenerator {
 		
 		modelCompiler.compile(resource, pfsa)
 		uiCompiler.compile(resource, pfsa)
+		datasourceCompiler.compile(resource, pfsa)
 		appCompiler.compile(resource, pfsa)
 
 		pfsa.saveProject()

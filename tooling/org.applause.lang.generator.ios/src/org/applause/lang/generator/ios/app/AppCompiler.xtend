@@ -19,14 +19,18 @@ class AppCompiler {
 	@Inject AppDelegateCompiler appDelegateCompiler
 	@Inject PrecompiledHeaderCompiler pchCompiler
 	@Inject InfoPlistCompiler infoPlistCompiler
+	@Inject MainMethodCompiler mainMethodCompiler
 	
 	def compile(Resource resource, ProjectFileSystemAccess pfsa) {
 		setupFrameworks(resource, pfsa)
 		setupBuildConfigurations(resource, pfsa)
 		
 		appDelegateCompiler.compile(resource, pfsa)
-		pchCompiler.compile(resource, pfsa)
-		infoPlistCompiler.compile(resource, pfsa)
+		
+		// TODO Add them to the 'Supporting Files' group. 
+		pchCompiler.compile(resource, pfsa, pfsa.mainSourceGroup)
+		infoPlistCompiler.compile(resource, pfsa, pfsa.mainSourceGroup)
+		mainMethodCompiler.compile(resource, pfsa, pfsa.mainSourceGroup)
 	}
 	
 	// TODO figure out a smart way how individual compilers can add frameworks.
@@ -36,6 +40,15 @@ class AppCompiler {
 		val frameworksGroup = pfsa.frameworksGroup
 		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile((FRAMEWORK_PATH + 'UIKit.framework').toPath))		
 		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile((FRAMEWORK_PATH + 'Foundation.framework').toPath))
+
+		// RestKit dependencies
+		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile(('libRestKit.a').toPath))
+		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile((FRAMEWORK_PATH + 'CFNetwork.framework').toPath))
+		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile((FRAMEWORK_PATH + 'CoreData.framework').toPath))
+		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile((FRAMEWORK_PATH + 'CoreGraphics.framework').toPath))
+		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile((FRAMEWORK_PATH + 'MobileCoreServices.framework').toPath))
+		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile((FRAMEWORK_PATH + 'Security.framework').toPath))
+		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile((FRAMEWORK_PATH + 'SystemConfiguration.framework').toPath))
 	}
 	
 	def setupBuildConfigurations(Resource resource, ProjectFileSystemAccess pfsa) {
@@ -59,6 +72,8 @@ class AppCompiler {
 				CLanguageDialect = CLanguageDialect::GNU99
 				cxxLanguageDialect = CxxLanguageDialect::CXX_11
 				blockAssertions = true
+				otherLinkerFlags = '"-ObjC -all_load"'
+				headerSearchPaths = '"\\"$(BUILT_PRODUCTS_DIR)/../../Headers\\""'
 			]
 			
 			createBuildConfiguration("Debug") => [
@@ -78,6 +93,8 @@ class AppCompiler {
 				CLanguageDialect = CLanguageDialect::GNU99
 				cxxLanguageDialect = CxxLanguageDialect::CXX_11
 				blockAssertions = true
+				otherLinkerFlags = '"-ObjC -all_load"'
+				headerSearchPaths = '"\\"$(BUILT_PRODUCTS_DIR)/../../Headers\\""'
 			]
 		]
 		
