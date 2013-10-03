@@ -114,7 +114,7 @@ class AppDelegateCompiler {
 			
 			[AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
 			
-			[[RKObjectManager sharedManager].HTTPClient setAuthorizationHeaderWithUsername:@"wwaltersen" password:@"h00gend00bel"];
+			[[RKObjectManager sharedManager].HTTPClient setAuthorizationHeaderWithUsername:@"" password:@""];
 
 		    NSIndexSet *successfulStatusCodes = RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful);
 		    
