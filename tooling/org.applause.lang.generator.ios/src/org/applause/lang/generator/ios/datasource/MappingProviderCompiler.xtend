@@ -66,7 +66,11 @@ class MappingProviderCompiler {
 			        _eventRequestMapping = [RKObjectMapping requestMapping];
 			        [_eventRequestMapping addAttributeMappingsFromDictionary:@{@"payload.issue.title": @"title_",
 			        														   @"type": @"type",
-			        														   @"created_at" : @"createdAt"}];
+			        														   @"created_at": @"createdAt",
+			        														   @"repo.name": @"repoName",
+			        														   @"actor.login": @"userName"}];
+
+ллл			// TODO relationship mappings
 ллл			        [_eventRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"user"
 ллл			                                                                                            toKeyPath:@"user"
 ллл																										withMapping:[self userRequestMapping]]];

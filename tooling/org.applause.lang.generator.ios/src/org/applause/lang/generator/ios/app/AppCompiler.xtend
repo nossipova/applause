@@ -42,7 +42,7 @@ class AppCompiler {
 		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile((FRAMEWORK_PATH + 'Foundation.framework').toPath))
 
 		// RestKit dependencies
-		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile(('libRestKit.a').toPath))
+//		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile(('libRestKit.a').toPath))
 		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile((FRAMEWORK_PATH + 'CFNetwork.framework').toPath))
 		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile((FRAMEWORK_PATH + 'CoreData.framework').toPath))
 		pfsa.appTarget.frameworkBuildPhase.add(frameworksGroup.createFrameworkFile((FRAMEWORK_PATH + 'CoreGraphics.framework').toPath))

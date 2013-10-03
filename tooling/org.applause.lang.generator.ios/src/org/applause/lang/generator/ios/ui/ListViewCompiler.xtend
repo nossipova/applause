@@ -11,16 +11,16 @@ import org.applause.lang.generator.ios.BoilerplateExtensions
 import org.applause.lang.generator.ios.IosOutputConfigurationProvider
 import org.applause.lang.generator.ios.ProjectFileSystemAccess
 import org.applause.lang.generator.ios.TypeExtensions
+import org.applause.lang.generator.ios.extensions.ExpressionExtensions
 import org.applause.lang.generator.ios.extensions.ImportManagerExtensions
 import org.applause.util.xcode.project.XcodeGroup
-import org.applause.lang.applauseDsl.StringLiteral
-import org.applause.lang.applauseDsl.EntityMemberCall
 
 class ListViewCompiler {
 
 	@Inject extension BoilerplateExtensions
 	@Inject extension TypeExtensions
 	@Inject extension ImportManagerExtensions
+	@Inject extension ExpressionExtensions
 
 	@Inject ImportManagerFactory importManagerFactory
 
@@ -57,9 +57,9 @@ class ListViewCompiler {
 	def private extendsClause(ListView listview, ImportManager manager) {
 		': UITableViewController'
 	}
-	
+
 	def private implementsClause(ListView listview, ImportManager manager) {
-		'<UITableViewDataSource, UITableViewDelegate>'	
+		'<UITableViewDataSource, UITableViewDelegate>'
 	}
 
 	// -- MODULE	
@@ -106,10 +106,11 @@ class ListViewCompiler {
 				self.title = @"«title»";
 				// TODO Table cell setup is dependent on the number of sections and cells,
 				//		make sure to factor this out.
-				«sections.map[items.items.map[
-					manager.addImport(type.typeName)
-					'''[self.tableView registerClass:[«type.typeName» class] forCellReuseIdentifier:@"«type.typeName»"];'''
-				]].flatten.join('\n')»
+				«sections.map[
+			items.items.map [
+				manager.addImport(type.typeName)
+				'''[self.tableView registerClass:[«type.typeName» class] forCellReuseIdentifier:@"«type.typeName»"];'''
+			]].flatten.join('\n')»
 			}
 			return self;
 		}
@@ -130,13 +131,13 @@ class ListViewCompiler {
 			//		In the first iteration, let's go with a simple case.
 			«val pathParts = datasource.datasource.outlets.get(0).path.parts»
 			«IF !pathParts.filter(Variable).nullOrEmpty»
-			return [NSString stringWithFormat:@"/«pathParts.map[
+				return [NSString stringWithFormat:@"/«pathParts.map[
 			switch it {
 				RESTURLPart: text
 				Variable: '%@'
 			}].join('/')»", «pathParts.filter(Variable).map[parameterReference.name].join(', ')»];
 			«ELSE»
-			return @"/«pathParts.filter(RESTURLPart).map[text].join('/')»";
+				return @"/«pathParts.filter(RESTURLPart).map[text].join('/')»";
 			«ENDIF»
 		}
 	'''
@@ -151,14 +152,12 @@ class ListViewCompiler {
 		        «val variableName = entity.typeName.toFirstLower»
 		        for (NSDictionary *eventDict in resultArray) {
 		            «entity.typeName» *«variableName» = [«entity.typeName» new];
-		            «entity.attributes.map[
-		            	'''«variableName».«name» = «variableName»Dict[@"«name»"];'''
-		            ].join('\n')»
+		            «entity.attributes.map ['''«variableName».«name» = «variableName»Dict[@"«name»"];'''].join('\n')»
 		            self.«name.toFirstLower»[[self.«name.toFirstLower» count]] = «variableName»;
 		        }
 		        [self.tableView reloadData];
 		    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-		        NSLog(@"Error loading «name.toFirstLower» for user %@: %@", @"wwaltersen", error);
+		        NSLog(@"Error loading «name.toFirstLower» for user %@: %@", @"", error);
 		    }];
 		}
 	'''
@@ -185,18 +184,13 @@ class ListViewCompiler {
 			// TODO this depends on the number of sections and their layout
 			static NSString *«cell.type.name»Identifier = @"«cell.type.name»";
 			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:«cell.type.name»Identifier forIndexPath:indexPath];
-
+		
 			«val entityName = (datasource.datasource.outlets.get(0).yields.type as Entity).name»
 			«val variableName = entityName.toFirstLower»
 			«importManager.addImport(entityName)»
 			«entityName» *«variableName» = («entityName» *)[self.«name.toFirstLower» objectAtIndex:[indexPath row]];
-			«cell.configurations.map[
-				'''cell.«type.component.name».text = «variableName».«switch value {
-					StringLiteral: (value as StringLiteral).value
-					EntityMemberCall: (value as EntityMemberCall).head.name					
-				}»;'''
-			].join('\n')»
-«««			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			«cell.configurations.map['''cell.«type.component.name».text = «value.asString(variableName)»;'''].join('\n')»
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			return cell;
 		}
 	'''

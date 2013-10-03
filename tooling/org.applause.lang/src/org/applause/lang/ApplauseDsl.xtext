@@ -246,7 +246,7 @@ DataSourceOutletCall:
 // -----------------------------------------
 
 Expression:
-	StringLiteral | EntityMemberCall
+	StringLiteral | ElvisExpression
 ;
 
 EntityMemberCall:
@@ -263,4 +263,8 @@ AttributeReference:
 
 StringLiteral:
 	value=STRING
+;
+
+ElvisExpression:
+	leftOperand=EntityMemberCall ('?:' rightOperand=EntityMemberCall)?
 ;
