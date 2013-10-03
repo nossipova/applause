@@ -9,8 +9,8 @@ import org.applause.lang.base.ImportManagerFactory
 import org.applause.lang.generator.ios.BoilerplateExtensions
 import org.applause.lang.generator.ios.IosOutputConfigurationProvider
 import org.applause.lang.generator.ios.ProjectFileSystemAccess
-import org.applause.lang.generator.ios.TypeExtensions
 import org.applause.lang.generator.ios.extensions.ImportManagerExtensions
+import org.applause.lang.generator.ios.extensions.TypeExtensions
 import org.applause.util.xcode.project.XcodeGroup
 
 /**

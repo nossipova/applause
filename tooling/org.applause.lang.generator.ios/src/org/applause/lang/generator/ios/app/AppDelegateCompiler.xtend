@@ -2,17 +2,18 @@ package org.applause.lang.generator.ios.app
 
 import com.google.inject.Inject
 import org.applause.lang.applauseDsl.Application
+import org.applause.lang.applauseDsl.DataSource
+import org.applause.lang.applauseDsl.Model
 import org.applause.lang.base.ImportManager
 import org.applause.lang.base.ImportManagerFactory
 import org.applause.lang.base.ScreenflowExtensions
 import org.applause.lang.generator.ios.BoilerplateExtensions
 import org.applause.lang.generator.ios.IosOutputConfigurationProvider
 import org.applause.lang.generator.ios.ProjectFileSystemAccess
-import org.applause.lang.generator.ios.TypeExtensions
-import org.eclipse.emf.ecore.resource.Resource
 import org.applause.lang.generator.ios.extensions.ImportManagerExtensions
-import org.applause.lang.applauseDsl.DataSource
-import org.applause.lang.applauseDsl.Model
+import org.applause.lang.generator.ios.extensions.TypeExtensions
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.xtext.EcoreUtil2
 
 class AppDelegateCompiler {
 	
@@ -118,7 +119,7 @@ class AppDelegateCompiler {
 
 		    NSIndexSet *successfulStatusCodes = RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful);
 		    
-		    «val dataSource = (eContainer as Model).elements.filter(DataSource).head»
+		    «val dataSource = EcoreUtil2.getContainerOfType(it, Model).eAllContents.filter(DataSource).head»
 		    «manager.addImport(dataSource.typeName)»
 		    «dataSource.name.toFirstUpper»MappingProvider *mappingProvider = [«dataSource.name.toFirstUpper»MappingProvider new];
 		    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:[mappingProvider eventRequestMapping] method:RKRequestMethodGET pathPattern:nil keyPath:nil statusCodes:successfulStatusCodes];

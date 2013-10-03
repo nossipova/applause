@@ -2,14 +2,14 @@ package org.applause.lang.generator.ios.ui
 
 import com.google.inject.Inject
 import org.applause.lang.applauseDsl.ListItemCellDeclaration
+import org.applause.lang.base.ImportManager
 import org.applause.lang.base.ImportManagerFactory
 import org.applause.lang.generator.ios.BoilerplateExtensions
 import org.applause.lang.generator.ios.IosOutputConfigurationProvider
 import org.applause.lang.generator.ios.ProjectFileSystemAccess
-import org.applause.lang.generator.ios.TypeExtensions
 import org.applause.lang.generator.ios.extensions.ImportManagerExtensions
+import org.applause.lang.generator.ios.extensions.TypeExtensions
 import org.applause.util.xcode.project.XcodeGroup
-import org.applause.lang.base.ImportManager
 
 class ListItemCellCompiler {
 
@@ -73,5 +73,5 @@ class ListItemCellCompiler {
 		
 		@end
 	'''
-	
+
 }

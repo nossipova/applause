@@ -2,9 +2,7 @@ package org.applause.lang.base
 
 import com.google.inject.Inject
 import org.applause.lang.applauseDsl.Attribute
-import org.applause.lang.applauseDsl.DataSource
 import org.applause.lang.applauseDsl.DataType
-import org.applause.lang.applauseDsl.ListItemCellDeclaration
 import org.applause.lang.applauseDsl.ListView
 import org.applause.lang.applauseDsl.Model
 import org.applause.lang.applauseDsl.NamedElement
@@ -39,24 +37,21 @@ abstract class TypeExtensions {
 		else
 			type.name as String		
 	}
+
+	def dispatch String typeName(Void it) {
+		''
+	}
 	
 	def dispatch String typeName(Attribute it) {
 		type?.typeName
 	}
 	
 	def dispatch String typeName(View it) {
+		''
 	}
 	
 	def dispatch String typeName(ListView it) {
 		name + 'ViewController'
-	}
-	
-	def dispatch String typeName(DataSource it) {
-		name + 'MappingProvider'
-	}
-	
-	def dispatch String typeName(ListItemCellDeclaration it) {
-		name
 	}
 	
 	def private dispatch name(Model it) {
@@ -102,19 +97,15 @@ abstract class TypeExtensions {
 			ns
 	}
 	
-	def fqn(NamedElement it) {
+	def dispatch fqn(NamedElement it) {
 		if (namespace != "")
 			namespace + '.' + typeName
 		else
-			typeName + '' // HACK
+			typeName
 	}
-	
-	// TODO: can remove as we've got a more generic version above?
-	def fqn(Type it) {
-		if (namespace != "")
-			namespace + '.' + typeName
-		else
-			typeName + '' // HACK
+
+	def dispatch fqn(Void it) {
+		''
 	}
 	
 	def String toFilePath(String path)	

@@ -9,23 +9,24 @@ import org.applause.lang.base.ImportManagerFactory
 import org.applause.lang.base.TypeExtensions
 import org.applause.lang.generator.android.AndroidOutputConfigurationProvider
 import org.applause.lang.generator.android.BoilerplateExtensions
+import org.applause.lang.generator.android.extensions.ImportManagerExtensions
 
-class ModelCompiler {
+class EntityCompiler {
 	
 	@Inject extension BoilerplateExtensions
 	@Inject extension TypeExtensions
 	@Inject extension AttributeExtensions
+	@Inject extension ImportManagerExtensions
 	
 	@Inject ImportManagerFactory importManagerFactory
 	
 	// outlet name
-	public static val String MODEL_OUPUT = AndroidOutputConfigurationProvider::OUTPUT_MODEL
+	public static val String MODEL_OUPUT = AndroidOutputConfigurationProvider.OUTPUT_MODEL
 	
 	def compile(Entity entity) '''
 		«fileHeader()»
 		
-		package «entity.namespace»;
-		
+		package «entity.namespace».entities		
 		«val importManager = importManagerFactory.create(entity)»
 		«val body = compile(entity, importManager)»
 		«importManager.imports()»
@@ -33,10 +34,9 @@ class ModelCompiler {
 	'''
 	
 	def private compile(Entity entity, ImportManager importManager) '''
-		public «entity.abstractClause»class «entity.typeName» «entity.extendsClause(importManager)» {
-			«FOR attribute:entity.attributes»
-				«compile(attribute, importManager)»
-			«ENDFOR»
+		«entity.abstractClause»class «entity.typeName» «entity.extendsClause(importManager)» {
+			
+			«entity.attributes.map[compile(importManager)].join»
 		}
 	'''
 	
@@ -52,33 +52,6 @@ class ModelCompiler {
 	}
 	
 	def private compile(Attribute attribute, ImportManager importManager) '''
-		private «importManager.serialize(attribute.type, attribute.many)» «attribute.fieldName»;
-		
-		public «importManager.serialize(attribute.type, attribute.many)» «attribute.getterName»() {
-			return «attribute.name»;
-		}
-		
-		public void «attribute.setterName»(«importManager.serialize(attribute.type, attribute.many)» «attribute.name») {
-			this.«attribute.fieldName» = «attribute.name»;
-		}
+		public «importManager.serialize(attribute.type, attribute.many)» «attribute.fieldName»
 	'''
-	
-	def private setterName(Attribute attribute) {
-		"set" + attribute.name.toFirstUpper
-	}
-	
-	def private getterName(Attribute attribute) {
-		"get" + attribute.name.toFirstUpper
-	}
-	
-	def private imports(ImportManager importManager) '''
-		«IF (!importManager.empty)»
-		«FOR i: importManager.imports»
-			import «i»;
-		«ENDFOR»
-		
-		«ENDIF»
-	'''
-	
-
 }

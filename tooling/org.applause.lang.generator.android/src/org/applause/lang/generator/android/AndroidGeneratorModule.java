@@ -22,7 +22,7 @@ public class AndroidGeneratorModule extends AbstractGenericModule {
 	}
 	
 	public Class<? extends TypeExtensions> bindTypeExtensions() {
-		return org.applause.lang.generator.android.TypeExtensions.class;
+		return org.applause.lang.generator.android.extensions.TypeExtensions.class;
 	}
 	
 	public Class<? extends ImportManager> bindImportManager() {

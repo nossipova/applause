@@ -21,7 +21,7 @@ public class IosGeneratorModule extends AbstractGenericModule {
 	}
 	
 	public Class<? extends TypeExtensions> bindTypeExtensions() {
-		return org.applause.lang.generator.ios.TypeExtensions.class;
+		return org.applause.lang.generator.ios.extensions.TypeExtensions.class;
 	}
 	
 	public Class<? extends ImportManager> bindImportManager() {

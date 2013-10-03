@@ -8,10 +8,10 @@ import org.applause.lang.base.ImportManagerFactory
 import org.applause.lang.generator.ios.BoilerplateExtensions
 import org.applause.lang.generator.ios.IosOutputConfigurationProvider
 import org.applause.lang.generator.ios.ProjectFileSystemAccess
-import org.applause.lang.generator.ios.TypeExtensions
 import org.applause.lang.generator.ios.extensions.ImportManagerExtensions
 
 import static extension org.applause.util.xcode.project.Path.*
+import org.applause.lang.generator.ios.extensions.TypeExtensions
 
 class MappingProviderCompiler {
 
