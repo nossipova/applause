@@ -8,12 +8,14 @@ import org.applause.lang.applauseDsl.DataSource
 class DatasourceCompiler {
 
 	@Inject JSONConverterCompiler jsonConverterCompiler
-//	@Inject ServerCompiler serverCompiler
+	@Inject ServerCompiler serverCompiler
+	@Inject CommunicatorCompiler communicatorCompiler
 	
 	def compile(Resource resource, IFileSystemAccess fsa) {
 		resource.allContents.filter(typeof(DataSource)).forEach [
 			jsonConverterCompiler.compile(it, fsa)
-//			serverCompiler.compile(it, fsa)
+			serverCompiler.compile(it, fsa)
+			communicatorCompiler.compile(it, fsa)
 		]
 	}
 	

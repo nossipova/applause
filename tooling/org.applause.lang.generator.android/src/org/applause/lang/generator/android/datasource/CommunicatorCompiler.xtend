@@ -2,6 +2,7 @@ package org.applause.lang.generator.android.datasource
 
 import com.google.inject.Inject
 import org.applause.lang.applauseDsl.DataSource
+import org.applause.lang.applauseDsl.Entity
 import org.applause.lang.base.ImportManager
 import org.applause.lang.base.ImportManagerFactory
 import org.applause.lang.generator.android.AndroidOutputConfigurationProvider
@@ -9,20 +10,17 @@ import org.applause.lang.generator.android.BoilerplateExtensions
 import org.applause.lang.generator.android.extensions.ImportManagerExtensions
 import org.applause.lang.generator.android.extensions.TypeExtensions
 import org.eclipse.xtext.generator.IFileSystemAccess
-import org.applause.lang.generator.android.extensions.RESTURLExtensions
-import org.applause.lang.applauseDsl.Entity
 
-class ServerCompiler {
+class CommunicatorCompiler {
 
 	@Inject extension TypeExtensions
 	@Inject extension BoilerplateExtensions
 	@Inject extension ImportManagerExtensions
-	@Inject extension RESTURLExtensions
 
 	@Inject ImportManagerFactory importManagerFactory
 
 	def compile(DataSource it, IFileSystemAccess fsa) {
-		fsa.generateFile(serverFileName, AndroidOutputConfigurationProvider.OUTPUT_MODEL, compile)
+		fsa.generateFile(communicatorFileName, AndroidOutputConfigurationProvider.OUTPUT_MODEL, compile)
 	}
 
 	def compile(DataSource it) '''
@@ -37,15 +35,25 @@ class ServerCompiler {
 	'''
 
 	def compile(DataSource it, ImportManager importManager) '''
-		interface «typeName»Server {
-
-		«val outlet = outlets.get(0)»
-		«importManager.addImport('retrofit.http.' + outlet.verb.literal)»
+		«importManager.addImport('android.content.AsyncTaskLoader')»
+		«importManager.addImport('android.content.Context')»
 		«importManager.addImport('java.util.List')»
-			@«outlet.verb.literal»('«outlet.path.toURLString»')
-			«val entity = outlets.get(0).yields.type as Entity»
-			«importManager.addImport(entity.namespace + '.entities.' + entity.typeName)»
-			def List<«entity.typeName»> get«outlet.name»()
+		«importManager.addImport('retrofit.RestAdapter')»
+		«val entity = outlets.get(0).yields.type as Entity»
+		«importManager.addImport(entity.namespace + '.entities.' + entity.typeName)»
+		class «typeName»Communicator extends AsyncTaskLoader<List<«entity.typeName»>> {
+			
+			«typeName»Server server
+		
+			new(Context context) {
+				super(context)
+				server = new RestAdapter.Builder().setServer('https://api.github.com').setConverter(new «typeName»JSONConverter).build.create(«typeName»Server)
+			}
+		
+			override loadInBackground() {
+				server.get«outlets.get(0).name»()
+			}
 		}
 	'''
+	
 }

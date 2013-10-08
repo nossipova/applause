@@ -120,14 +120,14 @@ Parameter:
 
 
 RESTURL:
-	{RESTURL} ('/' parts+=(RESTURLPart|Variable))*
+	{RESTURL} ('/' parts+=(RESTURLText|RESTURLVariable))*
 ;
 
-RESTURLPart:
-	{RESTURLPart} text=QualifiedName
+RESTURLText:
+	{RESTURLText} text=QualifiedName
 ;
 
-Variable:
+RESTURLVariable:
 	':' parameterReference=[Parameter]
 ;
 

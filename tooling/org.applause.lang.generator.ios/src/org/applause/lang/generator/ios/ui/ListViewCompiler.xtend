@@ -3,8 +3,6 @@ package org.applause.lang.generator.ios.ui
 import com.google.inject.Inject
 import org.applause.lang.applauseDsl.Entity
 import org.applause.lang.applauseDsl.ListView
-import org.applause.lang.applauseDsl.RESTURLPart
-import org.applause.lang.applauseDsl.Variable
 import org.applause.lang.base.ImportManager
 import org.applause.lang.base.ImportManagerFactory
 import org.applause.lang.generator.ios.BoilerplateExtensions
@@ -14,6 +12,7 @@ import org.applause.lang.generator.ios.extensions.ExpressionExtensions
 import org.applause.lang.generator.ios.extensions.ImportManagerExtensions
 import org.applause.lang.generator.ios.extensions.TypeExtensions
 import org.applause.util.xcode.project.XcodeGroup
+import org.applause.lang.generator.ios.extensions.RESTURLExtensions
 
 class ListViewCompiler {
 
@@ -21,6 +20,7 @@ class ListViewCompiler {
 	@Inject extension TypeExtensions
 	@Inject extension ImportManagerExtensions
 	@Inject extension ExpressionExtensions
+	@Inject extension RESTURLExtensions
 
 	@Inject ImportManagerFactory importManagerFactory
 
@@ -129,16 +129,7 @@ class ListViewCompiler {
 		{
 			// TODO Note that we might have multiple data sources in place, so the architecture needs to support this!
 			//		In the first iteration, let's go with a simple case.
-			«val pathParts = datasource.datasource.outlets.get(0).path.parts»
-			«IF !pathParts.filter(Variable).nullOrEmpty»
-				return [NSString stringWithFormat:@"/«pathParts.map[
-			switch it {
-				RESTURLPart: text
-				Variable: '%@'
-			}].join('/')»", «pathParts.filter(Variable).map[parameterReference.name].join(', ')»];
-			«ELSE»
-				return @"/«pathParts.filter(RESTURLPart).map[text].join('/')»";
-			«ENDIF»
+			return «datasource.datasource.outlets.get(0).path.toURLString»
 		}
 	'''
 
@@ -152,7 +143,7 @@ class ListViewCompiler {
 		        «val variableName = entity.typeName.toFirstLower»
 		        for (NSDictionary *eventDict in resultArray) {
 		            «entity.typeName» *«variableName» = [«entity.typeName» new];
-		            «entity.attributes.map ['''«variableName».«name» = «variableName»Dict[@"«name»"];'''].join('\n')»
+		            «entity.attributes.map['''«variableName».«name» = «variableName»Dict[@"«name»"];'''].join('\n')»
 		            self.«name.toFirstLower»[[self.«name.toFirstLower» count]] = «variableName»;
 		        }
 		        [self.tableView reloadData];
