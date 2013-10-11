@@ -1,0 +1,70 @@
+application GitHubBrowser
+
+namespace App {
+	
+	screenflow {	
+		startscreen Events
+	}
+
+	listview Events {
+		title = 'GitHub Activity'
+		datasource = GitHub() as GitHub
+		sections {
+			section AllEvents {
+				items {
+					cell EventCell foreach GitHub.Events() as Event {
+						textLabel = title_ ?: repoName
+						detailTextLabel = type
+					}
+				}
+			}
+		}
+	}
+
+	listitemcell EventCell {
+		Label textLabel
+		Label detailTextLabel
+	}
+
+	entity Event {
+		String title_
+		String repoName
+		String type
+	}
+	
+	entity User {
+		String name
+	}
+	
+	entity Repo {
+		String name
+	}
+
+	datasource GitHub {
+		Events() : Event[] { GET /users/demoify/events }
+	}
+
+}
+
+datatype String
+datatype Integer
+datatype Date
+datatype Bool
+datatype Label
+
+platform iOS {
+	typemapping String -> NSString
+	typemapping Integer -> NSNumber
+	typemapping Date -> NSDate
+	typemapping Bool -> BOOL primitive
+	typemapping Label -> UILabel
+}
+
+platform Android {
+	namespacemapping App -> de.nataliaossipova.githubbrowser
+	typemapping String -> String (java.lang)
+	typemapping Integer -> Integer (java.lang)
+	typemapping Date -> Date (java.util)
+	typemapping Bool -> Boolean (java.lang)
+	typemapping Label -> TextView (android.widget)
+}
